@@ -1,9 +1,9 @@
 export function cartTotal(items, discountPercent = 0) {
   let subtotal = 0;
-  for (let i = 1; i < items.length; i++) {
+  for (let i = 0; i < items.length; i++) {
     subtotal += items[i].price * items[i].qty;
   }
-  return subtotal - subtotal * discountPercent;
+  return subtotal - (subtotal * discountPercent) / 100;
 }
 
 export function splitEvenly(total, people) {
