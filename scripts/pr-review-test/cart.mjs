@@ -7,8 +7,13 @@ export function cartTotal(items, discountPercent = 0) {
 }
 
 export function splitEvenly(total, people) {
-  const share = Math.floor((total / people) * 100) / 100;
-  return Array(people).fill(share);
+  if (!Number.isInteger(people) || people < 1) {
+    throw new RangeError('people must be a positive integer');
+  }
+  const cents = Math.round(total * 100);
+  const share = Math.floor(cents / people);
+  const remainder = cents - share * people;
+  return Array.from({length: people}, (_, i) => (share + (i < remainder ? 1 : 0)) / 100);
 }
 export function applyCoupon(total, coupon) {
   if (coupon.expiresAt < Date.now()) {
