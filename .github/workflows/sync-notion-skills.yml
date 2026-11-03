@@ -33,12 +33,14 @@ jobs:
           echo "::add-mask::$oidc_jwt"
           infisical_token="$(infisical login --method=oidc-auth --machine-identity-id="$INFISICAL_IDENTITY_ID" --jwt="$oidc_jwt" --silent --plain)"
           echo "::add-mask::$infisical_token"
-          infisical run \
+          NOTION_ACCESS_TOKEN="$(infisical secrets get NOTION_ACCESS_TOKEN \
             --token "$infisical_token" \
             --projectId 88269636-bd9f-447a-a1fd-b788edc4895e \
             --env prod \
-            --silent \
-            -- node scripts/sync-notion-skills.mjs
+            --plain \
+            --silent)"
+          echo "::add-mask::$NOTION_ACCESS_TOKEN"
+          NOTION_ACCESS_TOKEN="$NOTION_ACCESS_TOKEN" node scripts/sync-notion-skills.mjs
 
       - name: Validate generated skills
         run: npm run check
