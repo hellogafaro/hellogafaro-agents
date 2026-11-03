@@ -17,6 +17,7 @@ Notion Documents hold only final, approved documentation, reports, or assets tha
 - Search Documents before creating. Read likely matches and update the page that already owns the subject, even when it is stale, thin, or inconvenient to find.
 - Never store or guess database IDs, page IDs, property names, relation targets, templates, or option values.
 - Never invent policies, ownership, deadlines, results, causes, or process steps.
+- Created by and Last edited by show the connection's bot. On every page you create or update, set the Done by people property to the person who connected the Notion account, read from Retrieve token's bot user (`bot.owner.user`). Sign every approved comment with a custom `display_name` holding only your agent name, such as Capy or Claude.
 - Before saving a material policy, strategy, or process change, explain the exact change and get confirmation.
 - Use concise, reader-facing prose. Do not use em dashes or en dashes.
 - Use `reporting` for analytical reports and `brainstorm` for unresolved planning.
