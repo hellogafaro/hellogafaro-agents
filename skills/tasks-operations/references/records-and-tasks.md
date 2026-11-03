@@ -24,7 +24,7 @@ Do not add headings, Done when lists, acceptance criteria or checklists, product
 
 Refer to the client team or project, not individual conversation participants. Owner and Assignee retain the actual individual owners. Preserve the team's accepted request as work to do, not a transcript, personal attribution, quoted wording, or conversational chronology.
 
-Context bullets are complete sentences. Do not use key-value prose such as Source:, Repository:, Asset:, or "her wording was". Weave necessary links into sentences. Omit source history that gives the executor no useful context. Store working photos and files in Assets and mention them in useful context; use body attachments only when Assets cannot hold the file. Do not create comments merely to preserve trimmed source history or hold an asset. Real discussion, feedback, decisions, and delivered results can be comments.
+Context bullets are complete sentences. Do not use key-value prose such as Source:, Repository:, Asset:, or "her wording was". Weave necessary links into sentences. Omit source history that gives the executor no useful context. Store working photos and files in Assets and mention them in useful context; use body attachments only when Assets cannot hold the file. Do not create comments merely to preserve trimmed source history or hold an asset. The specialist verified-match comment for explicitly requested cross-system sync is the narrow exception, with its communication approval unchanged. Real discussion, feedback, decisions, and delivered results can be comments.
 
 Internal tasks use English unless the user asks otherwise. Project language applies to client-facing work, not internal records by default.
 

@@ -19,7 +19,3 @@ Lead with the result or decision. Include only what the reader needs to understa
 - While working, report meaningful changes or blockers, not tool narration. Before sending, cut sentences that change neither what the reader knows nor what they should do.
 
 For substantial editing, consult [patterns](references/patterns.md) and [natural voice](references/adding-soul.md). For a requested recap use `summarize`; for transferring unfinished work use `handoff`. Writing never authorizes sending or publication.
-
-## Provenance
-
-Editing references derive from [pstack's unslop](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop), commit `bdf7aa355337897f167153e05069aca505dae17c`; its MIT notice remains in `LICENSE.md`. [Caveman](https://github.com/juliusbrussee/caveman) informs brevity, not compressed grammar or a context-compression proxy.

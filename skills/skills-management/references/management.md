@@ -25,6 +25,6 @@ Check trigger specificity, overlap, structure, source ownership, mutable configu
 - First-party source lives in Notion.
 - GitHub is a generated backup and distribution mirror.
 - Project installations live once in `.agents/skills` and are committed when the project must work from a fresh clone.
-- Shared skills use the approved user or organization scope. Discover its path rather than copying another host layout. Follow [the filesystem adapter](capy-installation.md) where applicable and keep provenance outside skill folders.
+- Shared skills use the approved user or organization scope. Discover its path rather than copying another host layout. Follow [the filesystem adapter](filesystem-installation.md) where applicable and keep provenance outside skill folders.
 - Project-specific skills stay project-scoped to avoid routing noise and accidental cross-project behavior.
 - Third-party, plugin, and system skills remain owned by their upstream source and do not move into Notion or get replaced by first-party refreshes.

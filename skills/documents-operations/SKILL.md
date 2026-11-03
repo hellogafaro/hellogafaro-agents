@@ -10,6 +10,8 @@ notion_page_id: 3dffc798-2e43-8175-b1e5-d85d588e05b7
 
 Notion Documents is the source for saved documentation. Use it for durable knowledge that someone should understand months later without extra context.
 
+Notion Documents hold only final, approved documentation, reports, or assets that may be shared with the customer. While a report or document is being worked on, keep it as internal temporary documentation (files in the working directory, the conversation, or the task's draft comment) and add it to Notion Documents only once the final is approved. Keep Notion clean: no drafts, no noise.
+
 ## Hard rules
 
 - Search Documents before creating. Read likely matches and update the page that already owns the subject, even when it is stale, thin, or inconvenient to find.

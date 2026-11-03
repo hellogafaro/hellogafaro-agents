@@ -21,5 +21,3 @@ Help the user reach a decision, not endure an interview. Start with the desired 
 Stop when the chosen direction, material constraints, and remaining uncertainty are clear enough for the next requested action. Return a short decision recap and the one next decision if one remains. Do not explore every hypothetical edge case or repeat settled questions.
 
 A brainstorming request authorizes discussion and read-only discovery, not production changes, external publication, or persistent planning records. Use `documents-operations` or `tasks-operations` only when saving or execution is authorized. Apply `write` to the conversation.
-
-The decision-dependency approach is informed by [Matt Pocock's grilling skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md); concrete alternatives are informed by [pstack's architect skill](https://github.com/cursor/plugins/blob/main/pstack/skills/architect/SKILL.md).

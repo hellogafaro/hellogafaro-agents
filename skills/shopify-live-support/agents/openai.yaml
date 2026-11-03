@@ -1,4 +1,0 @@
-interface:
-  display_name: "Shopify Live Support"
-  short_description: "Prepare Shopify support with approved messages"
-  default_prompt: "Prepare Shopify support and document the outcome. Show each outgoing message and destination for approval before contact or replies; prepare a call brief if exact-message approval cannot be maintained."

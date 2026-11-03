@@ -2,7 +2,7 @@
 name: |-
   investigate
 description: |-
-  Explains internal behavior, diagnoses failures, and traces past decisions from evidence. Use for how or why questions about existing systems, not broad public research or unrequested fixes.
+  Explains how something works, diagnoses what is wrong, and traces why a decision was made, from evidence, across systems, accounts, campaigns, and records. Use for how or why questions about anything the organization already runs, not broad public research or unrequested fixes.
 notion_page_id: 3eafc798-2e43-81c7-b1fa-fbfa2bb398e3
 ---
 
@@ -18,6 +18,7 @@ Three questions, one discipline: collect the evidence first, then see what story
 
 ## Evidence rules
 
+- Before collecting, identify the evidence that could decide the question. Own and retain the reproduction, decisive failed checks, and final confirmation, then return them with the finding. Use `visualize` for visual packaging; persist to a task only when one owns the accepted work.
 - Look at the real thing. Run it, open it, query it, read the live value. Code shape, summaries, and reports are leads, not proof.
 - Cite every claim: file and line, commit, task, email, message, metric with its date range, screenshot path. What you can't cite is inference. Label it.
 - Hedge on purpose. Say "because" only for direct evidence and "likely" or "appears to" for indirect evidence.
@@ -55,9 +56,3 @@ Report the symptom, how you reproduced it, the root cause with evidence, what yo
 4. Don't infer intent from shape. Something that makes sense today may exist for a reason that no longer applies, or for no reason.
 
 Report the decision, each reason with its citation, competing explanations, and the gaps.
-
-## Provenance
-
-- Adapted from [pstack](https://github.com/poteto/plugins/tree/main/pstack) (how, why, fix-root-causes, runtime-forensics).
-- Upstream commit: `74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12`
-- License: MIT, Copyright (c) 2026 Lauren Tan. See `LICENSE.md`.

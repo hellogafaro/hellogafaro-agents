@@ -2,13 +2,13 @@
 name: |-
   implement
 description: |-
-  Builds features, fixes confirmed bugs, refactors code, and improves measured performance through verifiable changes. Use for authorized code work, not diagnosis-only requests or unresolved product decisions.
+  Makes an authorized change to code, content, configuration, a campaign, or a record with the smallest verifiable edit, from contract to proof. Use when something must be built, fixed, or changed, not for diagnosis-only requests or unresolved product decisions.
 notion_page_id: 3eafc798-2e43-8154-b79b-e8662788ed3c
 ---
 
 # implement
 
-Implement the accepted outcome with the smallest understandable change. Read the affected flow before choosing a solution. The surrounding project, not a universal stack, determines the commands and conventions.
+Implement the accepted outcome with the smallest understandable change, whether the artifact is code, a document, a configuration, a campaign, or a record. Read the affected flow before choosing a solution. The surrounding project, not a universal stack, determines the commands and conventions. When a mode skill (`development`, `marketing`, `support`) routed here, its playbook owns the sequence; this skill owns how each change is contracted, made, and proven.
 
 ## Establish the contract
 
@@ -19,7 +19,7 @@ Implement the accepted outcome with the smallest understandable change. Read the
 
 The contract is ready when each slice has an observable result and a feasible check. Keep a small request small; do not manufacture a specification or task for every code edit.
 
-Before changing the artifact, capture the relevant baseline or reproduction and select an evidence location. Follow `visualize` for screenshots, recordings, or comparisons. Retain meaningful checkpoints and final proof through cleanup; do not collect every tool action or fabricate a missing baseline.
+Before changing the artifact, identify the claims and smallest final checks, capture the relevant baseline or reproduction, and select an evidence location. Confirm that the checks and intended publication are feasible within available access and authority. Save useful check output when it runs rather than reconstructing it from chat at closure. Follow `visualize` for screenshots, recordings, or comparisons. Retain meaningful checkpoints and final proof through cleanup; do not collect every tool action or fabricate a missing baseline.
 
 ## Choose the smallest solution
 
@@ -29,12 +29,8 @@ Preserve trust-boundary validation, security, error handling, data integrity, an
 
 ## Execute and prove
 
-Read only the applicable recipe in [change recipes](references/change-recipes.md). Work one verifiable slice at a time. Use the host's orchestration for independent work and its native Git and PR lifecycle when authorized; this skill grants no commit, push, merge, or deployment permission.
+Work one verifiable slice at a time, following the active playbook's shape for the change when one exists. Use the host's orchestration for independent work and its native Git and PR lifecycle when authorized; this skill grants no commit, push, merge, or deployment permission.
 
 Run `verify` against the final artifact and requested outcome, not just the diff. Review both conformance to project standards and conformance to the request. Prefer the host's existing review mechanism over a duplicate review stack. Investigate findings before acting on them.
 
-Implementation is ready when the accepted behavior is demonstrated, relevant checks cover the final revision, and blocking findings are resolved. If access prevents proof, report the missing check as unverified. If closure is authorized, pass verified work to `deliver`; otherwise return the implementation and readiness state. Use `handoff` when another owner must continue unfinished work.
-
-## Sources
-
-Adapted from [pstack](https://github.com/cursor/plugins/tree/main/pstack), with its MIT notice retained in `LICENSE.md`. Also informed by [Matt Pocock's skills](https://github.com/mattpocock/skills) and [Ponytail](https://github.com/dietrichgebert/ponytail). Procedures are adapted to the current host rather than importing upstream tool commands.
+Implementation is ready when the accepted behavior is demonstrated, relevant checks cover the final revision, blocking findings are resolved, and the required baseline, decisive failures, and final proof have been collected from any workers. Files left only on a worker machine are not a completed evidence handoff. If access prevents proof, report the missing check as unverified. If closure is authorized, pass verified work to `deliver`; otherwise return the implementation and readiness state. Use `handoff` when another owner must continue unfinished work.

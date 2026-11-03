@@ -18,15 +18,4 @@ Run representative cases on the capability tiers intended to use the skills. Com
 
 Check named skill handoffs against the current inventory. Exercise nested calls: verification requesting visual evidence must return a verdict, not recursively start delivery; prose editing must return text, not rerun its caller. Missing named owners must produce an explicit gap, not guessed substitution.
 
-Validate names, descriptions, local links, complete exports, and installations against source hashes. Check that mandatory references are reachable, old names are removed, and model/host names appear only where technically necessary or in provenance. Compare always-loaded metadata separately from loaded bodies; character or word counts are not measured model-token cost.
-
-## Research basis
-
-- [Skill authoring guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices): specific discovery descriptions, sufficient instructions, progressive disclosure, representative testing.
-- [Context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents): high-signal context and the balance between brittle prescriptions and vague goals.
-- [Multi-agent research](https://www.anthropic.com/engineering/multi-agent-research-system): bounded worker briefs and selective parallelism; extra agents can increase total tokens.
-- [Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering): clear instructions and evaluations when prompts or model versions change.
-- [Prompt design](https://ai.google.dev/gemini-api/docs/prompting-strategies): explicit constraints, output shape, and useful examples.
-- [Agent-facing writing](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) and [engineering skills](https://github.com/cursor/plugins/tree/main/pstack): conditional pointers, focused outcomes, and real verification.
-
-These sources inform the procedure; their model names, orchestration commands, and claimed benchmark gains are not portable defaults.
+Validate names, descriptions, local links, complete exports, and installations against source hashes. Check that mandatory references are reachable, old names are removed, and model/host names appear only where technically necessary. Compare always-loaded metadata separately from loaded bodies; character or word counts are not measured model-token cost.

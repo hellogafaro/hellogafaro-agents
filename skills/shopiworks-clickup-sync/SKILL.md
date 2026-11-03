@@ -2,13 +2,13 @@
 name: |-
   shopiworks-clickup-sync
 description: |-
-  Imports Johan's Minicoton or Somomu ClickUp requests into Notion, or publishes verified Notion outcomes and actual time to matched provider ClickUp tasks in Spanish.
+  Imports or publishes explicitly requested Minicoton or Somomu ClickUp sync, with Notion as the execution record and verified results and actual time in Spanish.
 notion_page_id: 3dffc798-2e43-8174-ab15-e851ed1722b5
 ---
 
 # shopiworks-clickup-sync
 
-Follow ClickUp intake, Notion execution, then ClickUp client-facing updates for the live Projects `Minicoton` and `Somomu`. Include another Project only when the user explicitly adds it. ClickUp is a customer input source like email, not an equal source of truth. Notion owns internal execution, status, completion, and Timesheets.
+Run only when the user explicitly requests import from or publication to ClickUp for the live Projects `Minicoton` and `Somomu`. Notion is the default; Project membership, a ClickUp source link, task completion, or a generic closure request alone does not trigger outbound sync. Reading a supplied ClickUp request to understand and capture work does not authorize writing back to ClickUp. Include another Project only when the user explicitly adds it. ClickUp is a customer input source like email, not an equal source of truth. Notion owns internal execution, status, completion, and Timesheets.
 
 ## Hard rules
 
@@ -16,7 +16,7 @@ Before any human-facing message, including a ClickUp or internal Notion comment,
 
 For Johan's time entries, record only the actual duration and date. Omit `billable` from every write and keep times of day out of user and client reports; follow [publication.md](references/publication.md) for API date handling.
 
-Use `tasks-operations` with the selected Notion connection for every Notion task, Project, completion, and Timesheet operation. Use the connected ClickUp MCP's dedicated tools (`clickup_get_task`, `clickup_create_comment`, `clickup_add_time_entry`, and so on) for ClickUp reads and writes, except the documented time-entry correction fallback in [publication.md](references/publication.md). Do not use Composio's ClickUp comment tools, a personal API token, or an ad hoc API call; Composio's ClickUp comment tools silently drop real mentions.
+Use `tasks-operations` with the selected Notion connection for every Notion task, Project, completion, and Timesheet operation. Use the connected ClickUp MCP's dedicated tools (`clickup_get_task`, `clickup_create_comment`, `clickup_add_time_entry`, and so on) for ClickUp reads and writes, except the documented time-entry correction fallback in [publication.md](references/publication.md). Do not use Composio's ClickUp comment tools, a personal API token, or an ad hoc API call; Composio's ClickUp comment tools silently drop real mentions. An available authenticated read-only connector may discover status or list metadata when the dedicated MCP cannot expose it; this exception grants no alternative write authority.
 
 Write concise natural English in Notion and concise natural neutral Spanish for the external provider in ClickUp. Rewrite for the reader rather than copying raw Spanish into Notion or raw English into ClickUp.
 

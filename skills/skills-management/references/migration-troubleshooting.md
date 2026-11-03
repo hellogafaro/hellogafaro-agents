@@ -21,7 +21,7 @@ Do not replace unrelated files under `.agents` or any provider directory.
 - Updates skip a skill: inspect `gh skill list`; manually copied skills lack provenance and must be reinstalled.
 - Duplicate skills appear: search project and user scopes, then remove only the obsolete approved copy.
 - Runtime does not discover skills: verify its documented shared or project installation path, metadata, and permissions; start a new session if its registry is stale.
-- Capy does not discover skills: verify `skills/<name>/SKILL.md` in the approved Drive scope, matching name frontmatter, and start a new session if the registry is stale.
+- The host does not discover skills: verify `skills/<name>/SKILL.md` in the approved shared skills directory, matching name frontmatter, and start a new session if the registry is stale.
 - A Notion attachment contains reference files in a ZIP: validate and materialize its `references/` paths without editing their contents; retain the original archive and hash both source and materialized files.
 - Git shows unexpected deletions: stop, preserve the working tree, and compare the canonical source before proceeding.
 
@@ -35,4 +35,4 @@ git status --short --branch
 
 Also confirm the old skill name, old deploy command, duplicate provider copies, and stale references are absent.
 
-For Capy-only work, use [Capy installation and refresh](capy-installation.md) instead of the GitHub CLI and Git checks above. Stop if source files or references are missing, a local installation has unexpected edits, or an archive fails validation; never fill gaps from a legacy copy without approval.
+For a direct filesystem installation, use [filesystem installation and refresh](filesystem-installation.md) instead of the GitHub CLI and Git checks above. Stop if source files or references are missing, a local installation has unexpected edits, or an archive fails validation; never fill gaps from a legacy copy without approval.
