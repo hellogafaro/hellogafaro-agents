@@ -35,9 +35,8 @@ jobs:
           echo "::add-mask::$infisical_token"
           infisical run \
             --token "$infisical_token" \
-            --projectId 169aedf1-6980-442f-bfd6-64cd236c429d \
+            --projectId 88269636-bd9f-447a-a1fd-b788edc4895e \
             --env prod \
-            --path /github/skills-sync \
             --silent \
             -- node scripts/sync-notion-skills.mjs
 
