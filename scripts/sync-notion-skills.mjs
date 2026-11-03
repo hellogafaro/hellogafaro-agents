@@ -34,7 +34,9 @@ async function notionRequest(pathname, token, init = {}) {
     }
 
     const body = await response.text();
-    throw new Error(`Notion ${pathname} failed (${response.status}): ${body.slice(0, 500)}`);
+    throw Object.assign(new Error(`Notion ${pathname} failed (${response.status}): ${body.slice(0, 500)}`), {
+      status: response.status,
+    });
   }
 
   throw new Error(`Notion ${pathname} failed after retries.`);
@@ -120,7 +122,16 @@ function normalizeId(value) {
 }
 
 async function downloadSkill(page, token, directory) {
-  const archiveRef = await notionRequest(`/ai/skills/${page.id}`, token);
+  let archiveRef;
+  try {
+    archiveRef = await notionRequest(`/ai/skills/${page.id}`, token);
+  } catch (error) {
+    if (error.status === 400 && error.message.includes("is not a skill")) {
+      console.log(`Skipping ${page.id}: Notion does not treat this page as a skill.`);
+      return null;
+    }
+    throw error;
+  }
   const response = await fetch(archiveRef.url);
   if (!response.ok) throw new Error(`Skill archive download failed (${response.status}).`);
 
@@ -170,6 +181,7 @@ async function main() {
     const names = new Set();
     for (const page of pages) {
       const skill = await downloadSkill(page, token, temporary);
+      if (!skill) continue;
       if (names.has(skill.name)) throw new Error(`Duplicate exported skill name: ${skill.name}`);
       names.add(skill.name);
       await cp(skill.directory, path.join(stagedSkills, skill.name), { recursive: true });
