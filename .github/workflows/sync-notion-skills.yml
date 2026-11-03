@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 concurrency:
   group: sync-notion-skills
@@ -24,16 +25,22 @@ jobs:
 
       - name: Export skills from Notion
         env:
-          INFISICAL_SERVICE_TOKEN: ${{ secrets.INFISICAL_SERVICE_TOKEN }}
+          INFISICAL_DOMAIN: https://eu.infisical.com/api
+          INFISICAL_IDENTITY_ID: ${{ vars.INFISICAL_IDENTITY_ID }}
           NOTION_SKILLS_DATA_SOURCE_ID: ${{ vars.NOTION_SKILLS_DATA_SOURCE_ID }}
-        run: >-
-          infisical run
-          --token "$INFISICAL_SERVICE_TOKEN"
-          --projectId 4135fce4-59df-4bdb-ad85-247f949f1ef2
-          --env prod
-          --path /github/skills-sync
-          --silent
-          -- node scripts/sync-notion-skills.mjs
+        run: |
+          oidc_jwt="$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://eu.infisical.com" | jq -r .value)"
+          echo "::add-mask::$oidc_jwt"
+          infisical_token="$(infisical login --method=oidc-auth --machine-identity-id="$INFISICAL_IDENTITY_ID" --jwt="$oidc_jwt" --silent --plain)"
+          echo "::add-mask::$infisical_token"
+          NOTION_ACCESS_TOKEN="$(infisical secrets get NOTION_ACCESS_TOKEN \
+            --token "$infisical_token" \
+            --projectId 88269636-bd9f-447a-a1fd-b788edc4895e \
+            --env prod \
+            --plain \
+            --silent)"
+          echo "::add-mask::$NOTION_ACCESS_TOKEN"
+          NOTION_ACCESS_TOKEN="$NOTION_ACCESS_TOKEN" node scripts/sync-notion-skills.mjs
 
       - name: Validate generated skills
         run: npm run check
