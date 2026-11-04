@@ -10,9 +10,11 @@
 
 ## Verify Notion
 
-Confirm that the selected connection can search, download, and upload skills. Fetch the target Skills database before creating a page so its current data source and title property are known. Never store connection tokens, page IDs, or database IDs in the skill itself.
+Use the Notion connection in Executor labeled "Hello Gafaro". Look it up by label on every run; account IDs change when a connection is refreshed. Download with `tools.notion.api.agentSkills.getSkillDirectory` and upload the complete directory with `tools.notion.skills.upload` (`page_id`, plus `files` with `SKILL.md` and each supporting file by relative path, contents inserted from the files rather than retyped). Each upload stops for an Executor approval that a routine cannot clear. Confirm that the selected connection can search, download, and upload skills. Fetch the target Skills database before creating a page so its current data source and title property are known.
 
-After an upload, download the skill again and compare its `SKILL.md` instructions and supporting files with the intended source. Notion may normalize Markdown formatting and emits only standard skill frontmatter.
+Never store connection tokens or account IDs in a skill. Stable database and data source IDs for Johan's own workspace databases are allowed in operations skills, such as `tasks-operations`, to skip lookups; pair each with a fallback that looks the database up by name if the ID fails.
+
+After an upload, download the skill again with `getSkillDirectory`, diff it against the backup, and compare its `SKILL.md` instructions and supporting files with the intended source. Notion may normalize Markdown formatting and emits only standard skill frontmatter.
 
 ## Verify distribution only when needed
 
