@@ -1,7 +1,7 @@
 name: PR review
 
 # Reusable pull request reviewer, replacing the Capy "PR review" automations.
-# Callers: .github/workflows/pr-review-caller.yml (copy into each repository).
+# Callers: copy .github/pr-review/caller.yml to .github/workflows/pr-review.yml in each repository.
 # post: false is a shadow run: the job token is read-only and the review goes to the job summary.
 
 on:
@@ -60,6 +60,8 @@ jobs:
         env:
           INFISICAL_DOMAIN: https://eu.infisical.com/api
           IDENTITY: ${{ inputs.infisical_identity_id || vars.PR_REVIEW_INFISICAL_IDENTITY_ID }}
+          PROJECT_ID: ${{ inputs.infisical_project_id }}
+          SECRET_NAME: ${{ inputs.secret_name }}
         run: |
           [ -n "$IDENTITY" ] || { echo "::error::Set vars.PR_REVIEW_INFISICAL_IDENTITY_ID or the infisical_identity_id input"; exit 1; }
           npm install --global @infisical/cli@0.43.132 >/dev/null
@@ -67,14 +69,18 @@ jobs:
           echo "::add-mask::$oidc_jwt"
           token="$(infisical login --method=oidc-auth --machine-identity-id="$IDENTITY" --jwt="$oidc_jwt" --silent --plain)"
           echo "::add-mask::$token"
-          key="$(infisical secrets get "${{ inputs.secret_name }}" --token "$token" --projectId "${{ inputs.infisical_project_id }}" --env prod --plain --silent)"
+          key="$(infisical secrets get "$SECRET_NAME" --token "$token" --projectId "$PROJECT_ID" --env prod --plain --silent)"
           echo "::add-mask::$key"
           echo "key=$key" >> "$GITHUB_OUTPUT"
 
       - name: Load review prompt
         id: prompt
+        env:
+          TOOLING_REF: ${{ inputs.tooling_ref }}
         run: |
-          curl -fsSL "https://raw.githubusercontent.com/hellogafaro/hellogafaro-skills/${{ inputs.tooling_ref }}/.github/pr-review/prompt.md" \
+          # The ref can come from a PR branch name: keep it out of the script text and allow plain ref characters only.
+          printf '%s' "$TOOLING_REF" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._/-]{0,199}$' || { echo "::error::Invalid tooling_ref"; exit 1; }
+          curl -fsSL "https://raw.githubusercontent.com/hellogafaro/hellogafaro-skills/$TOOLING_REF/.github/pr-review/prompt.md" \
             | envsubst '$REPO $PR_NUMBER $HEAD_SHA $POST_MODE $RUN_ID $REVIEW_FILE' > "$RUNNER_TEMP/prompt.md"
           { echo "text<<PROMPT_EOF"; cat "$RUNNER_TEMP/prompt.md"; echo "PROMPT_EOF"; } >> "$GITHUB_OUTPUT"
 
@@ -122,6 +128,8 @@ jobs:
         env:
           INFISICAL_DOMAIN: https://eu.infisical.com/api
           IDENTITY: ${{ inputs.infisical_identity_id || vars.PR_REVIEW_INFISICAL_IDENTITY_ID }}
+          PROJECT_ID: ${{ inputs.infisical_project_id }}
+          SECRET_NAME: ${{ inputs.secret_name }}
         run: |
           [ -n "$IDENTITY" ] || { echo "::error::Set vars.PR_REVIEW_INFISICAL_IDENTITY_ID or the infisical_identity_id input"; exit 1; }
           npm install --global @infisical/cli@0.43.132 >/dev/null
@@ -129,14 +137,18 @@ jobs:
           echo "::add-mask::$oidc_jwt"
           token="$(infisical login --method=oidc-auth --machine-identity-id="$IDENTITY" --jwt="$oidc_jwt" --silent --plain)"
           echo "::add-mask::$token"
-          key="$(infisical secrets get "${{ inputs.secret_name }}" --token "$token" --projectId "${{ inputs.infisical_project_id }}" --env prod --plain --silent)"
+          key="$(infisical secrets get "$SECRET_NAME" --token "$token" --projectId "$PROJECT_ID" --env prod --plain --silent)"
           echo "::add-mask::$key"
           echo "key=$key" >> "$GITHUB_OUTPUT"
 
       - name: Load review prompt
         id: prompt
+        env:
+          TOOLING_REF: ${{ inputs.tooling_ref }}
         run: |
-          curl -fsSL "https://raw.githubusercontent.com/hellogafaro/hellogafaro-skills/${{ inputs.tooling_ref }}/.github/pr-review/prompt.md" \
+          # The ref can come from a PR branch name: keep it out of the script text and allow plain ref characters only.
+          printf '%s' "$TOOLING_REF" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._/-]{0,199}$' || { echo "::error::Invalid tooling_ref"; exit 1; }
+          curl -fsSL "https://raw.githubusercontent.com/hellogafaro/hellogafaro-skills/$TOOLING_REF/.github/pr-review/prompt.md" \
             | envsubst '$REPO $PR_NUMBER $HEAD_SHA $POST_MODE $RUN_ID $REVIEW_FILE' > "$RUNNER_TEMP/prompt.md"
           { echo "text<<PROMPT_EOF"; cat "$RUNNER_TEMP/prompt.md"; echo "PROMPT_EOF"; } >> "$GITHUB_OUTPUT"
 

@@ -39,9 +39,9 @@ The workflow requires these repository variables:
 
 `.github/workflows/pr-review.yml` is a reusable reviewer that replaces the Capy
 "PR review" automations. Each repository calls it from a copy of
-`.github/workflows/pr-review-caller.yml` (with `uses:` pointing at
-`hellogafaro/hellogafaro-skills/.github/workflows/pr-review.yml@main`). The prompt is
-`.github/pr-review/prompt.md`. It keeps Capy's `pr-review` commit status and review
+`.github/pr-review/caller.yml` saved as `.github/workflows/pr-review.yml`; this
+repository uses `.github/workflows/pr-review-self.yml`. The prompt is
+`.github/pr-review/prompt.md` on `main`. It keeps Capy's `pr-review` commit status and review
 markers, so a commit is reviewed once and re-reviews continue from the last one.
 
 With `post: false` (shadow) the job token is read-only and the review only goes to

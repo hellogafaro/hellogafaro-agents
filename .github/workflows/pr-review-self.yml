@@ -1,0 +1,28 @@
+name: PR review (this repository)
+
+# Reviews this repository's own pull requests through the local reusable workflow,
+# reading the prompt from the pull request branch so prompt changes are tried before merge.
+# Other repositories copy .github/pr-review/caller.yml instead.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  statuses: write
+  id-token: write
+
+concurrency:
+  group: pr-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: ${{ !github.event.pull_request.draft && github.event.pull_request.user.type != 'Bot' && !endsWith(github.event.pull_request.user.login, '[bot]') }}
+    uses: ./.github/workflows/pr-review.yml
+    with:
+      post: false
+      tooling_ref: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || 'main' }}
