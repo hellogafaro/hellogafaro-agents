@@ -1,0 +1,28 @@
+name: PR review (caller)
+
+# Copy this file to .github/workflows/pr-review.yml in each repository.
+# In this repository it reviews its own pull requests through the local reusable workflow.
+# Elsewhere use: uses: hellogafaro/hellogafaro-skills/.github/workflows/pr-review.yml@main
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  statuses: write
+  id-token: write
+
+concurrency:
+  group: pr-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: ${{ !github.event.pull_request.draft && github.event.pull_request.user.type != 'Bot' && !endsWith(github.event.pull_request.user.login, '[bot]') }}
+    uses: ./.github/workflows/pr-review.yml
+    with:
+      post: false
+      tooling_ref: ${{ github.head_ref || 'main' }}

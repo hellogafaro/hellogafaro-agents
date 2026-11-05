@@ -1,0 +1,151 @@
+name: PR review
+
+# Reusable pull request reviewer, replacing the Capy "PR review" automations.
+# Callers: .github/workflows/pr-review-caller.yml (copy into each repository).
+# post: false is a shadow run: the job token is read-only and the review goes to the job summary.
+
+on:
+  workflow_call:
+    inputs:
+      post:
+        description: Post the review, label and commit status (false = shadow run)
+        type: boolean
+        default: false
+      model:
+        description: Claude model for the review
+        type: string
+        default: claude-opus-5-5
+      tooling_ref:
+        description: Ref of hellogafaro/hellogafaro-skills to read the review prompt from
+        type: string
+        default: main
+      infisical_identity_id:
+        description: Infisical machine identity for GitHub OIDC (defaults to vars.PR_REVIEW_INFISICAL_IDENTITY_ID)
+        type: string
+        default: ""
+      infisical_project_id:
+        description: Infisical project holding the model key
+        type: string
+        default: 88269636-bd9f-447a-a1fd-b788edc4895e
+      secret_name:
+        description: Name of the Anthropic API key secret in Infisical
+        type: string
+        default: ANTHROPIC_API_KEY
+
+jobs:
+  shadow:
+    if: ${{ !inputs.post }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read
+      id-token: write
+    env:
+      REPO: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      POST_MODE: "false"
+      RUN_ID: ${{ github.run_id }}
+      REVIEW_FILE: ${{ github.workspace }}/.pr-review-output.md
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Read model key from Infisical
+        id: key
+        env:
+          INFISICAL_DOMAIN: https://eu.infisical.com/api
+          IDENTITY: ${{ inputs.infisical_identity_id || vars.PR_REVIEW_INFISICAL_IDENTITY_ID }}
+        run: |
+          [ -n "$IDENTITY" ] || { echo "::error::Set vars.PR_REVIEW_INFISICAL_IDENTITY_ID or the infisical_identity_id input"; exit 1; }
+          npm install --global @infisical/cli@0.43.132 >/dev/null
+          oidc_jwt="$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://eu.infisical.com" | jq -r .value)"
+          echo "::add-mask::$oidc_jwt"
+          token="$(infisical login --method=oidc-auth --machine-identity-id="$IDENTITY" --jwt="$oidc_jwt" --silent --plain)"
+          echo "::add-mask::$token"
+          key="$(infisical secrets get "${{ inputs.secret_name }}" --token "$token" --projectId "${{ inputs.infisical_project_id }}" --env prod --plain --silent)"
+          echo "::add-mask::$key"
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+
+      - name: Load review prompt
+        id: prompt
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/hellogafaro/hellogafaro-skills/${{ inputs.tooling_ref }}/.github/pr-review/prompt.md" \
+            | envsubst '$REPO $PR_NUMBER $HEAD_SHA $POST_MODE $RUN_ID $REVIEW_FILE' > "$RUNNER_TEMP/prompt.md"
+          { echo "text<<PROMPT_EOF"; cat "$RUNNER_TEMP/prompt.md"; echo "PROMPT_EOF"; } >> "$GITHUB_OUTPUT"
+
+      - name: Review
+        uses: anthropics/claude-code-action@c0949c50a78c1ec8ce2647db36629b870e715d0c # v1
+        with:
+          anthropic_api_key: ${{ steps.key.outputs.key }}
+          github_token: ${{ github.token }}
+          prompt: ${{ steps.prompt.outputs.text }}
+          claude_args: >-
+            --model ${{ inputs.model }}
+            --allowedTools "Bash(gh:*),Bash(git:*),Read,Grep,Glob,Write"
+
+      - name: Publish shadow review to the job summary
+        if: always()
+        run: |
+          { echo "## Shadow review (not posted)"; echo; cat "$REVIEW_FILE" 2>/dev/null || echo "No review file was written."; } >> "$GITHUB_STEP_SUMMARY"
+
+  post:
+    if: ${{ inputs.post }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      statuses: write
+      id-token: write
+    env:
+      REPO: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      POST_MODE: "true"
+      RUN_ID: ${{ github.run_id }}
+      REVIEW_FILE: ${{ github.workspace }}/.pr-review-output.md
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Read model key from Infisical
+        id: key
+        env:
+          INFISICAL_DOMAIN: https://eu.infisical.com/api
+          IDENTITY: ${{ inputs.infisical_identity_id || vars.PR_REVIEW_INFISICAL_IDENTITY_ID }}
+        run: |
+          [ -n "$IDENTITY" ] || { echo "::error::Set vars.PR_REVIEW_INFISICAL_IDENTITY_ID or the infisical_identity_id input"; exit 1; }
+          npm install --global @infisical/cli@0.43.132 >/dev/null
+          oidc_jwt="$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://eu.infisical.com" | jq -r .value)"
+          echo "::add-mask::$oidc_jwt"
+          token="$(infisical login --method=oidc-auth --machine-identity-id="$IDENTITY" --jwt="$oidc_jwt" --silent --plain)"
+          echo "::add-mask::$token"
+          key="$(infisical secrets get "${{ inputs.secret_name }}" --token "$token" --projectId "${{ inputs.infisical_project_id }}" --env prod --plain --silent)"
+          echo "::add-mask::$key"
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+
+      - name: Load review prompt
+        id: prompt
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/hellogafaro/hellogafaro-skills/${{ inputs.tooling_ref }}/.github/pr-review/prompt.md" \
+            | envsubst '$REPO $PR_NUMBER $HEAD_SHA $POST_MODE $RUN_ID $REVIEW_FILE' > "$RUNNER_TEMP/prompt.md"
+          { echo "text<<PROMPT_EOF"; cat "$RUNNER_TEMP/prompt.md"; echo "PROMPT_EOF"; } >> "$GITHUB_OUTPUT"
+
+      - name: Review
+        uses: anthropics/claude-code-action@c0949c50a78c1ec8ce2647db36629b870e715d0c # v1
+        with:
+          anthropic_api_key: ${{ steps.key.outputs.key }}
+          github_token: ${{ github.token }}
+          prompt: ${{ steps.prompt.outputs.text }}
+          claude_args: >-
+            --model ${{ inputs.model }}
+            --allowedTools "Bash(gh:*),Bash(git:*),Read,Grep,Glob"
