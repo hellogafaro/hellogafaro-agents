@@ -32,7 +32,7 @@ Use these database IDs as discovery entry points. Fetch a source's current datab
 - Priority is mandatory for an active task. Preserve explicit priority and use clear urgency and deadline context for routine judgment. Never silently clear it. Ask a focused question before declaring the task prepared if priority remains materially ambiguous.
 - Store working photos and files in Assets and refer to them when useful. Use body attachments only when Assets cannot hold the file. Comments are for real discussion, feedback, decisions, and delivered results, never just source history or asset storage. A specialist’s explicitly requested cross-system sync may use its concise verified-match comment as a narrow exception; ordinary source capture belongs in useful body context.
 - After a write, fetch the affected page and confirm the change persisted.
-- Created by and Last edited by show the connection's bot. On every task you create or update, set the Done by people property to the person who connected the Notion account, read from Retrieve token's bot user (`bot.owner.user`). Sign every comment with a custom `display_name` holding only your agent name, such as Capy or Claude.
+- Created by and Last edited by show the connection's bot. On every task you create or update, set the Done by people property to the person who connected the Notion account, read from Retrieve token's bot user (`bot.owner.user`). Sign every comment with a custom `display_name` holding only your agent name.
 - Record only the actual duration and date in Timesheets. Ask when either is missing and never infer it. Never set a billable flag or record or report a time of day.
 
 ## Workflow

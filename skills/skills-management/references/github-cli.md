@@ -8,10 +8,8 @@ Notion is canonical. The GitHub repository is generated from Notion and provides
 
 ```text
 project/
-├── .agents/
-│   └── skills/
-└── .claude/
-    └── skills -> ../.agents/skills
+└── .agents/
+    └── skills/
 ```
 
 Install an explicit project skill from the generated mirror:

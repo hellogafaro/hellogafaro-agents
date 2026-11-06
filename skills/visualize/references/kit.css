@@ -1,4 +1,4 @@
-/* BB canvas kit v0.3 — shadcn anatomy, BB theme tokens */
+/* Canvas kit v0.3 — shadcn anatomy, theme tokens */
 :root {
   color-scheme: light dark;
   --canvas: oklch(1 0 0);

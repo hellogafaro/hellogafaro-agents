@@ -132,7 +132,7 @@ def main():
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--apply", action="store_true")
     args = parser.parse_args()
-    work = Path.home() / ".capy/work/skill-sync"
+    work = Path.home() / ".skills/work/skill-sync"
     work.mkdir(parents=True, exist_ok=True)
     plan = json.loads(args.plan.read_text())
     excluded = set(plan.get("excluded", [])) | {"git-operations"}
@@ -141,8 +141,8 @@ def main():
         raise ValueError("Duplicate or empty inventory")
     no_symlink(args.destination)
     no_symlink(args.manifest)
-    if args.destination.resolve().is_relative_to(Path.home() / ".capy/system"):
-        raise ValueError("Capy system skills are not installation targets")
+    if args.destination.resolve().is_relative_to(Path.home() / ".skills/system"):
+        raise ValueError("System skills are not installation targets")
     previous = json.loads(args.manifest.read_text()) if args.manifest.exists() else {}
     records = {}
     with tempfile.TemporaryDirectory(prefix="stage-", dir=work) as temporary:
