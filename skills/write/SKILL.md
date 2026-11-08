@@ -12,7 +12,7 @@ When called to edit prose, return the edited text to the caller. Do not start a 
 
 Lead with the result or decision. Include only what the reader needs to understand it and act correctly.
 
-- Quick answers need one or two complete sentences. Use bullets or a compact comparison for distinct choices; prose for connected reasoning; headings for longer answers.
+- Quick answers need one or two complete sentences. Use a numbered list for distinct items, steps, or choices, so the reader can answer by number; prose for connected reasoning; headings for longer answers. Write list items as plain sentences, not `Label: value` lines.
 - Show options visually when seeing the difference is easier than reading it. Reveal detail progressively without artificial approval turns or repeated status.
 - Preserve evidence, uncertainty, safety boundaries, and next actions. Keep code, identifiers, commands, quotes, dates, exact errors, and links intact. Shorten surrounding prose, not facts or grammar.
 - Match the recipient's language and established voice. Remove repetition, filler, hype, and generic advice. Prefer concrete verbs, ordinary words, sentence case, and straight quotes. Avoid decorative emojis and em dashes in authored prose; quoted and technical content stays exact.

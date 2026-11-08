@@ -27,7 +27,7 @@ Turn a marketing request for a brand into a planned, executed, and measured piec
 
 Decide the path before the first step and say which one you took.
 
-- **Simple**: one clear change or question with a small blast radius, no money moved, no new data collected, and no customer-facing behavior changed. Read only the matching playbook and `verify`, and close through `deliver` when a task owns the work. Where a playbook step says "through `investigate`" or "through `implement`", apply the step's intent (diagnose with evidence, make the smallest change) without opening those skills. Reproduce, change, verify on the surface, report. No task unless one exists or the user asked for one. A replayed reproduction that passes on the same surface is a passed check even when the project has no verification recipe; the recipe item alone is reported as unverified.
+- **Simple**: one clear change or question with a small blast radius, no money moved, no new data collected, and no customer-facing behavior changed. Read only the matching playbook and `verify`, and close through `deliver`. Where a playbook step says "through `investigate`" or "through `implement`", apply the step's intent (diagnose with evidence, make the smallest change) without opening those skills. Reproduce, change, verify on the surface, report. No task unless one exists or the user asked for one. A replayed reproduction that passes on the same surface is a passed check even when the project has no verification recipe; the recipe item alone is reported as unverified.
 - **Complex**: several parts, an unsettled design, dependencies, a customer-facing change, or more than one owner. Run the full playbook with intake, `brainstorm` for real forks, slices, and `deliver`. A change that collects personal data or feeds an audience also needs the consent basis stated in the contract.
 - **Data-critical**: the result depends on figures, comparisons, or patterns, or it will move money, budgets, inventory, or audiences by a computed amount. Every number goes through `analyze` before it is stated or acted on, with the script and data retained, and the approval step shows the computed figures. Data-critical adds to complex; it does not replace it.
 
@@ -35,7 +35,7 @@ A request can move up a path mid-way when evidence shows it is bigger than it lo
 
 ## Size the intake
 
-Intake is one lookup, not a ritual. When the request names a task, use it. Otherwise search Notion once for a task that already owns this work and attach to it. When none exists: a question, a tentative idea, or a read-only analysis needs no task; a small, clear change the user did not ask to record proceeds without one and the reply says so; accepted or substantial work gets its task created before the first change. At the end, `deliver` closes only a task that exists; without one, report readiness and the evidence instead of closure.
+Intake is one lookup, not a ritual. When the request names a task, use it. Otherwise search Notion once for a task that already owns this work and attach to it. When none exists: a question, a tentative idea, or a read-only analysis needs no task; a small, clear change the user did not ask to record proceeds without one and the reply says so; accepted or substantial work gets its task created before the first change. At the end, close through `deliver` either way: it closes the task when one exists, and always cleans up and ends with the close-out list.
 
 ## Accounts and access
 
