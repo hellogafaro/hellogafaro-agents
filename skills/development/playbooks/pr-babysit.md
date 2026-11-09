@@ -9,6 +9,6 @@
 5. Triage every review finding and external comment on its merits against the current diff: fix, dismiss with a concrete reason, or ask. Resolve each addressed thread with its disposition; never leave a decided thread open.
 6. For a failing check, read the failed job log, reproduce locally when feasible, and fix the cause; rerun a flaky check at most once before treating it as real.
 7. After each push, wait for CI and review results at a sensible interval rather than polling tightly. Rerun `verify` on the final head when the fix changed behavior.
-8. Stop at merge-ready. Merging, enabling auto-merge, and releasing need the user's explicit request in the current conversation.
+8. Stop at merge-ready, and merge only as "Merges and releases" in [git and PRs](../references/git-and-prs.md) allows. Enabling auto-merge and releasing need the user's request in this thread.
 
 **Reply:** the mode, each PR's state before and after, what you fixed, what you dismissed and why, and the one thing that still needs a human.

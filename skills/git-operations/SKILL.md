@@ -73,8 +73,7 @@ Default PR body:
 
 ## Merges and releases
 
-- Do not merge without explicit user approval.
-- Do not merge if checks are failing unless the user explicitly accepts the risk.
+- Merge only as "Merges and releases" in `development/references/git-and-prs.md` allows.
 - Prefer platform-native merge commands such as `gh pr merge`.
 - For tags and releases, inspect existing tags/releases first.
 - Release notes must come from commits, PRs, changelog, or user-provided context.

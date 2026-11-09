@@ -19,7 +19,7 @@ Choose the narrowest layer that explains the evidence. Repetition is a signal to
 
 An in-scope repair needs no new planning ceremony. A new outcome, unclear preference, broader impact, or inferred shared policy needs the relevant decision or authorization before applying it. Technical capability and reversibility do not expand permissions.
 
-Identify what changed since prior approval. Rerun affected checks on the corrected artifact; an old pass does not cover a new revision. Any change to approved communication text, recipients, destination, or attachments requires renewed send approval. A content change to the approved diff requires renewed merge approval before merging; a clean rebase or base update alone does not, unless it changes the content or invalidates an approval condition. Separate operational gates still apply. Never treat silence, a worker's success report, or correcting a draft as approval to publish it.
+Identify what changed since prior approval. Rerun affected checks on the corrected artifact; an old pass does not cover a new revision. Any change to approved communication text, recipients, destination, or attachments requires renewed send approval. A content change to the approved diff requires renewed merge approval before merging, except fixes that bring a pull request to green under the merge rule in `development/references/git-and-prs.md`; a clean rebase or base update alone does not, unless it changes the content or invalidates an approval condition. Separate operational gates still apply. Never treat silence, a worker's success report, or correcting a draft as approval to publish it.
 
 ## Close the correction
 

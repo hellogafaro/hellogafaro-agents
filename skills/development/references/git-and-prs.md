@@ -1,6 +1,6 @@
 # Git and pull requests
 
-The host owns branches, commits, pushes, pull requests, reviews, and merges. Use its native lifecycle when it has one, the GitHub CLI otherwise, and this reference for how to use either well. Nothing here grants permission: commit, push, open a PR, or merge only when the user asked, in this message or earlier in the thread, or the project instructions authorize it.
+The host owns branches, commits, pushes, pull requests, reviews, and merges. Use its native lifecycle when it has one, the GitHub CLI otherwise, and this reference for how to use either well. Nothing here grants permission: commit, push, or open a PR only when the user asked, in this message or earlier in the thread, or the project instructions authorize it, and merge only as "Merges and releases" below allows.
 
 ## Commits
 
@@ -31,7 +31,7 @@ The host owns branches, commits, pushes, pull requests, reviews, and merges. Use
 
 ## Merges and releases
 
-- Never merge, enable auto-merge, tag, or release without the user's explicit request in the current conversation, and never with failing checks unless the user explicitly accepts that risk.
-- Before merging an open PR, wait until its checks finish and the PR review automation has posted its review on the current head. If no review arrives (for example within about 10 minutes of the checks finishing, or the PR is outside the automation's filters), run the `review` agent on the current head yourself. Fix or resolve its findings, then merge.
+- Merge only when both hold: the user authorized it in this thread, either by asking to merge or with an earlier end-to-end or go-live instruction, and the current head is fully green, meaning all checks passed, the review is posted on that head, and every finding is fixed or resolved. If authorization is missing, ask once it's green. If it isn't green, fix and wait. If no review arrives within about 10 minutes of the checks finishing, or the PR is outside the review automation's filters, run the `review` agent on the current head and treat its result as the review.
+- Enable auto-merge, tag, or release only when the user asks for it in this thread.
 - Release notes come from commits, PRs, and the changelog, grouped into user-facing changes, fixes, migrations, and known risks.
 - Distinguish merged, deployed, and verified in production; a merge announces none of the latter.
