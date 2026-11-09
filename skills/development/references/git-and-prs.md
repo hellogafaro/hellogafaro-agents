@@ -15,6 +15,7 @@ The host owns branches, commits, pushes, pull requests, reviews, and merges. Use
 
 - Open pull requests through the host's own pull request workflow when it has one, so checks and reviews are tracked; otherwise use the GitHub CLI against the intended base branch.
 - Ready for review by default; draft only when the work is unfinished or the user asked for a draft.
+- Whoever opens a PR babysits it with [PR babysit](../playbooks/pr-babysit.md) until it is merge-ready, meaning fully green as "Merges and releases" defines it, then merges or asks once as that rule says. Never stop at "PR opened".
 - Title in the repository's style. Body grouped by what shipped, written from the final diff: no abandoned approaches, no commit list, no claims the diff does not support. Scale it to the change.
 - Include the proof: the command or path actually run, the before and after for a bug or performance change, screenshots or a recording for a meaningful UI change, attached where the reviewer can open them.
 - Publish proof images and other visual evidence for a PR through `visualize`'s publishing reference (`visualize/references/publishing.md`).

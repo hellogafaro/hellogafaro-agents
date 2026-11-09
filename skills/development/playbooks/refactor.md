@@ -8,7 +8,7 @@
 4. Implement through `implement`, one step at a time, re-running the pin after each. Keep unrelated bugs and feature requests out; record them for their own task.
 5. Remove obsolete APIs after their callers migrate, and delete rather than keep dead code.
 6. Verify through `verify`: the pin still passes on the final revision, the improvement is observable, and the project's verification recipe passes. A refactor that changed behavior is a failed check, not a bonus.
-7. Follow [git and PRs](../references/git-and-prs.md): one logical step per commit, mechanical moves separated from semantic edits so review can trust each.
+7. Follow [git and PRs](../references/git-and-prs.md): one logical step per commit, mechanical moves separated from semantic edits so review can trust each, and babysitting the PR you opened as it says.
 8. Close through `deliver`, reporting readiness.
 
 **Reply:** what moved, the pin and its result before and after, what was removed, and any deferred follow-ups with their task.

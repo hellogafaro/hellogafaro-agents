@@ -8,7 +8,7 @@
 4. Change one thing. Repeat the identical measurement. Keep the change only if the metric moved beyond the variance; revert it otherwise and record what it ruled out.
 5. Confirm correctness was not traded away: existing checks pass and the measured work is the intended work, not skipped work.
 6. Verify through `verify`: the before and after measurements on the same conditions, with the project's verification recipe for the affected path.
-7. Follow [git and PRs](../references/git-and-prs.md): the PR body carries the measured result and its limits, never a projected speedup.
+7. Follow [git and PRs](../references/git-and-prs.md): the PR body carries the measured result and its limits, never a projected speedup, and you babysit the PR you opened as it says.
 8. Close through `deliver`, reporting readiness.
 
 **Reply:** baseline, final measurement, method, what changed, what was tried and reverted, and the limits of the measurement.
