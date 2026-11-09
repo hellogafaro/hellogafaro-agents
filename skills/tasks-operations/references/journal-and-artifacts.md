@@ -2,7 +2,7 @@
 
 ## Task journal and artifacts
 
-Prepare comments and replies as drafts for user approval under `deliver` before posting them to people. The journal procedure below describes what an approved post should contain, not permission to publish it. Continue factual internal record and asset maintenance within the authorized scope while approval is pending.
+Post Notion task comments and replies directly, without separate approval, as the hard rule in this skill says and following the journal procedure below. Any other human-facing communication still needs approval under `deliver` before it is sent or posted. Continue factual internal record and asset maintenance within the authorized scope while such approval is pending.
 
 Use each part of a task for one job. Properties hold operational state, including the mandatory Priority for active work. The body explains the accepted current work in two or three short paragraphs followed by useful context bullets in ordinary sentences. Follow the prose rules in records-and-tasks.md. Keep necessary constraints, blockers, and useful links concise, without headings, Done when lists, acceptance checklists, generic steps, speculative requirements, or repeated properties. Update the body when accepted feedback makes it stale.
 

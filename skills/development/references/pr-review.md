@@ -46,7 +46,11 @@ If your own review can't finish, set the status (step 6) to error "Review failed
 
 If `gh pr view <n> -R <repo> --json headRefOid` no longer equals EVENT, set the status to success `Superseded by <short new head>` and go to step 7.
 
-Otherwise post one review with `gh api repos/<repo>/pulls/<n>/reviews --method POST`, event `COMMENT`, `commit_id` EVENT. Each high or medium finding is an inline comment on the RIGHT side of a diff line; a finding outside the diff is one line in the body. Each comment reads:
+Otherwise post one review with `gh api repos/<repo>/pulls/<n>/reviews --method POST`, event `COMMENT`, `commit_id` EVENT. Each high or medium finding is an inline comment on the RIGHT side of a diff line; a finding outside the diff is one line in the body.
+
+- Publish any proof image or other visual evidence in the review through `visualize`'s publishing reference (`visualize/references/publishing.md`).
+
+Each comment reads:
 
 ```text
 <High|Medium> · <title, at most 8 words>[ · investigate]

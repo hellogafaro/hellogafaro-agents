@@ -32,7 +32,7 @@ Use one self-contained HTML file for a canvas, with inline styles and no build s
 
 Render every authored artifact and inspect its important states, including narrow layout where relevant. For a long canvas, inspect the top, middle, and bottom. For options, inspect each variant. Fix overflow, clipping, unreadable labels, and broken interactions before presenting it. If rendering is unavailable, report that limit instead of claiming visual QA.
 
-Attach the real screenshot, clip, or file with a concise explanation of what it shows. A local path or an unverified attachment is not delivery. Use `verify` to assess whether the captured evidence supports the requested outcome; use `reporting` for analytical claims and `deliver` for completion records and stakeholder communication.
+Attach the real screenshot, clip, or file with a concise explanation of what it shows. A local path or an unverified attachment is not delivery. When someone outside this server must open it, follow [publishing](references/publishing.md). Use `verify` to assess whether the captured evidence supports the requested outcome; use `reporting` for analytical claims and `deliver` for completion records and stakeholder communication.
 
 For a requested Notion save, use `documents-operations` for a durable document or `tasks-operations` for task evidence. Use the upload's exact native attachment or embed reference and fetch the saved destination to verify it. Keep private material within its approved audience; do not publish it merely to obtain an embed.
 
