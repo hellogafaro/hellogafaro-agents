@@ -1,0 +1,27 @@
+name: PR review
+
+# Copy to .github/workflows/pr-review.yml in a repository to review its pull requests.
+# The prompt always comes from hellogafaro/hellogafaro-skills main. Set post: true once
+# this repository's Capy "PR review" automation is disabled.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  statuses: write
+  id-token: write
+
+concurrency:
+  group: pr-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: ${{ !github.event.pull_request.draft && github.event.pull_request.user.type != 'Bot' && !endsWith(github.event.pull_request.user.login, '[bot]') }}
+    uses: hellogafaro/hellogafaro-skills/.github/workflows/pr-review.yml@main
+    with:
+      post: false

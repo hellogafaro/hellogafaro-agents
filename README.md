@@ -35,6 +35,21 @@ The workflow requires these repository variables:
 - `INFISICAL_IDENTITY_ID`
 - `NOTION_SKILLS_DATA_SOURCE_ID`
 
+## Pull request review
+
+`.github/workflows/pr-review.yml` is a reusable reviewer that replaces the Capy
+"PR review" automations. Each repository calls it from a copy of
+`.github/pr-review/caller.yml` saved as `.github/workflows/pr-review.yml`; this
+repository uses `.github/workflows/pr-review-self.yml`. The prompt is
+`.github/pr-review/prompt.md` on `main`. It keeps Capy's `pr-review` commit status and review
+markers, so a commit is reviewed once and re-reviews continue from the last one.
+
+With `post: false` (shadow) the job token is read-only and the review only goes to
+the job summary. It reads `ANTHROPIC_API_KEY` from the `hellogafaro-studio` project
+(`prod`) in EU Infisical through GitHub OIDC, using the machine identity in the
+`PR_REVIEW_INFISICAL_IDENTITY_ID` variable. That identity should accept only tokens
+whose `job_workflow_ref` is this repository's `pr-review.yml` on `main`.
+
 ## Structure
 
 - `skills/` contains the complete Notion exports, including supporting files.
