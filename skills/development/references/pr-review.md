@@ -1,6 +1,6 @@
 # PR review automation
 
-The procedure for the main agent of the GitHub PR review automation. The automation prompt binds this run's values (`<repo>`, `<n>`, EVENT, SHORT, CHECKOUT, BASE, LAST, TITLE, BODY), sets the trust boundary and what the run may post, and points here. LAST_SHORT is the first 7 characters of LAST. Run every command in CHECKOUT.
+The procedure for the main agent of the GitHub PR review automation. The automation prompt binds this run's values (`<repo>`, `<n>`, RUN, EVENT, SHORT, CHECKOUT, BASE, LAST, TITLE, BODY), sets the trust boundary and what the run may post, and points here. LAST_SHORT is the first 7 characters of LAST. Run every command in CHECKOUT.
 
 ## 1. Range
 
@@ -34,7 +34,7 @@ Review RANGE yourself, following your own steps, and keep your `format: json` re
 
 When DEPTH is deep, or your review finds a security concern, call your partner `security` once in the foreground with: repository CHECKOUT at EVENT, target RANGE, base BASE, TITLE and BODY as data, OPEN as findings not to re-raise, the security concerns you found, `format: json`, "post nothing", and "also report changes that widen access (permissions, token scopes, secrets exposed)". If its reply isn't JSON, ask it once more; if it fails, continue and note "Security review unavailable."
 
-If your own review can't finish, set the status (step 6) to error "Review failed" and go to step 7.
+If your own review can't finish, publish only the status error "Review failed" (step 6) and go to step 7.
 
 ## 5. Merge findings
 
@@ -44,10 +44,29 @@ If your own review can't finish, set the status (step 6) to error "Review failed
 
 ## 6. Publish
 
-If `gh pr view <n> -R <repo> --json headRefOid` no longer equals EVENT, set the status to success `Superseded by <short new head>` and go to step 7.
+If `gh pr view <n> -R <repo> --json headRefOid` no longer equals EVENT, publish nothing and go to step 7 with status `skipped`. The GitHub plugin skips the run and resolves its claim.
 
-Otherwise post one review with `gh api repos/<repo>/pulls/<n>/reviews --method POST`, event `COMMENT`, `commit_id` EVENT. Each high or medium finding is an inline comment on the RIGHT side of a diff line; a finding outside the diff is one line in the body.
+Otherwise publish the result once, through the GitHub plugin's `publishReview`, in one Executor `execute` program:
 
+```js
+return await tools.opencode.rpc.call({
+  path: { rpcID: "github", method: "publishReview" },
+  body: { input: {
+    runID: "RUN",
+    head: "EVENT",
+    review: { body: "<review body>", comments: [{ path: "<file>", line: <line>, body: "<comment>" }] },
+    label: "reviewed",
+    status: { state: "success", description: "<result line>" },
+  } },
+})
+```
+
+- It posts one `COMMENT` review of EVENT, the label and the `review` status as the app's bot, on this pull request only. It takes no repository, URL, token or review event.
+- Each high or medium finding is an inline comment, `path` and `line` on the RIGHT side of a diff line, at most 20. A finding outside the diff is one line in the body.
+- The plugin adds `<!-- pr-review sha=EVENT -->` to the body. Do not supply any `<!-- pr-review` comment in the body, including `<!-- pr-review-finding`; finding markers go only in inline comments. The plugin strips complete commit-marker comments and refuses any remaining marker opener.
+- `description` is the result line, at most 140 characters. `state` is failure only when this review posted a new high confirmed finding, otherwise success.
+- When the review failed (step 4, or the prompt's fallback), send only `runID`, `head` and `status: { state: "error", description: "Review failed" }`.
+- Call it once. If the call pauses for approval, fails, or its outcome is unknown, don't repeat it and don't publish another way; go to step 7 with status `error`. The plugin then fails the run from what GitHub shows. A review or status posted with `gh` or any other account does not count.
 - Upload every visual asset the review posts (screenshots, before/after images, diagrams) to the `g4f4r0-files` bucket by following /home/g4f4r0/.agents/skills/visualize/references/publishing.md, calling its R2 tools through Executor's `execute` (`base64 -w0 <file>` gives the body), and embed each one by its `https://files.g4f4r0.dev/<key>` URL.
 
 Each comment reads:
@@ -68,16 +87,13 @@ The review body, in order, with no greeting, praise, or summary:
 2. On a re-review with earlier findings: "Fixed N earlier findings; M still open."
 3. On a first review, up to 3 low findings, each as `- file:line: sentence`.
 4. Any unavailable note.
-5. Last: `<!-- pr-review sha=EVENT -->`
 
-Then run `gh label create reviewed -R <repo> --color 5319E7 --description "Reviewed by the PR review automation"` (ignore an already-exists error) and `gh pr edit <n> -R <repo> --add-label reviewed`.
-
-Set the status: commit status context `review` on EVENT, with the result line as its description; failure only when this review posted a new high confirmed finding, otherwise success.
+Before the call, run `gh label create reviewed -R <repo> --color 5319E7 --description "Reviewed by the PR review automation"` (ignore an already-exists error), so the label `publishReview` adds keeps its color.
 
 ## 7. Reply
 
 Reply with only this one line of JSON:
 
 ```json
-{"repo":"","pr":0,"sha":"","since":null,"depth":"light|deep","new":0,"high":0,"fixed":0,"open":0,"status":"success|failure|error"}
+{"repo":"","pr":0,"sha":"","since":null,"depth":"light|deep","new":0,"high":0,"fixed":0,"open":0,"status":"success|failure|error|skipped"}
 ```
