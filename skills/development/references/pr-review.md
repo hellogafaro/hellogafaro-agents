@@ -48,7 +48,7 @@ If `gh pr view <n> -R <repo> --json headRefOid` no longer equals EVENT, set the 
 
 Otherwise post one review with `gh api repos/<repo>/pulls/<n>/reviews --method POST`, event `COMMENT`, `commit_id` EVENT. Each high or medium finding is an inline comment on the RIGHT side of a diff line; a finding outside the diff is one line in the body.
 
-- Publish any proof image or other visual evidence in the review through `visualize`'s publishing reference (`visualize/references/publishing.md`).
+- Upload every visual asset the review posts (screenshots, before/after images, diagrams) to the `g4f4r0-files` bucket by following /home/g4f4r0/.agents/skills/visualize/references/publishing.md, calling its R2 tools through Executor's `execute` (`base64 -w0 <file>` gives the body), and embed each one by its `https://files.g4f4r0.dev/<key>` URL.
 
 Each comment reads:
 
