@@ -8,7 +8,7 @@ notion_page_id: 3eafc798-2e43-8154-b79b-e8662788ed3c
 
 # implement
 
-Implement the accepted outcome with the smallest understandable change, whether the artifact is code, a document, a configuration, a campaign, or a record. Read the affected flow before choosing a solution. The surrounding project, not a universal stack, determines the commands and conventions. When a mode skill (`development`, `marketing`, `support`) routed here, its playbook owns the sequence; this skill owns how each change is contracted, made, and proven.
+Implement the accepted outcome with the smallest understandable change, whether the artifact is code, a document, a configuration, a campaign, or a record. Read the affected flow before choosing a solution. The surrounding project, not a universal stack, determines the commands and conventions. When a playbook routed here, that playbook owns the sequence; this skill owns how each change is contracted, made, and proven.
 
 ## Establish the contract
 

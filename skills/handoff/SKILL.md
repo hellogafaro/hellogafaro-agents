@@ -38,6 +38,6 @@ When resuming your own or another agent's work:
 1. Locate the prior trail: the task's journal and comments, the conversation transcript, the branch and its diff against the base, the saved drafts. Read the latest state first, then scan back for decisions. Parse a long trail in a worker and keep the reduced timeline.
 2. Reconstruct operational state from the trail, which is authoritative input; do not re-derive it. Diff done against planned and name the resume point.
 3. Verify inherited claims against the original goal on the real artifact before building on them. A prior self-report of success is not proof; a prior failure is not proof either.
-4. Route the remaining work to the matching mode playbook and continue from the resume point without redoing completed steps.
+4. Route the remaining work to the matching playbook and continue from the resume point without redoing completed steps.
 
 Reply with where the prior work stopped, what you inherited versus redid, and the resume point.
