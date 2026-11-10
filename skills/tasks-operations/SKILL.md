@@ -29,6 +29,7 @@ Use these database IDs as discovery entry points. Fetch a source's current datab
 - Never assume project, people, dates, duration, status, or relations. Ask one focused question when a missing fact could change the result.
 - Write task bodies as two or three short paragraphs followed by useful context bullets in ordinary sentences. No headings, Done when lists, acceptance checklists, generic steps, speculative requirements, or repeated properties. A full task means complete necessary fields and sufficient concise context.
 - Describe the client team or project's accepted request as work to do. Keep individual owners in Owner and Assignee, not personal attribution or conversation history in prose.
+- Due date is mandatory on every task, whatever its status, including backlog and Done. Never create, update, or close a task with an empty Due date. When no date is given for open work, ask one focused question; for completed work, use the actual completion date. Fill an empty Due date whenever you touch a task.
 - Priority is mandatory for an active task. Preserve explicit priority and use clear urgency and deadline context for routine judgment. Never silently clear it. Ask a focused question before declaring the task prepared if priority remains materially ambiguous.
 - Store working photos and files in Assets and refer to them when useful. Use body attachments only when Assets cannot hold the file. Comments are for real discussion, feedback, decisions, and delivered results, never just source history or asset storage. A specialist’s explicitly requested cross-system sync may use its concise verified-match comment as a narrow exception; ordinary source capture belongs in useful body context.
 - After a write, fetch the affected page and confirm the change persisted.
@@ -44,4 +45,4 @@ For intake or decomposition, first follow [triage and slicing](references/triage
 3. Keep the task body, comments, and attachments current: [journal-and-artifacts.md](references/journal-and-artifacts.md).
 4. Log time, mark Done, and report: [time-and-completion.md](references/time-and-completion.md).
 
-Finish when the correct Notion records match the request, no duplicate exists, required relations are set, authorized status changes persisted, and time is in Timesheets.
+Finish when the correct Notion records match the request, no duplicate exists, every touched task has a Due date, required relations are set, authorized status changes persisted, and time is in Timesheets.

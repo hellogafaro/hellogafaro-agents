@@ -12,7 +12,7 @@ After a write, fetch the affected page and confirm the change persisted. If the 
 
 ## Tasks
 
-Create one task per real outcome. Do not turn vague ideas, passive information, or unowned discussion into tasks. An active task needs a clear name, Owner, Assignee, Project, Priority, Status, Recurrence, and Due date. Backlog work may omit the due date.
+Create one task per real outcome. Do not turn vague ideas, passive information, or unowned discussion into tasks. An active task needs a clear name, Owner, Assignee, Project, Priority, Status, Recurrence, and Due date. Every task needs a Due date, including backlog and completed work; never leave it empty.
 
 Priority is mandatory for an active task. Preserve an explicit priority. When none is stated, use clear task urgency and deadline context to select the appropriate live Priority option through routine judgment. A launch needed today has high urgency. Never silently clear priority to avoid resolving it. If priority remains materially ambiguous, ask one focused question before declaring the task prepared. Verify the saved Priority along with the other necessary fields.
 
