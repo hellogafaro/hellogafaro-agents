@@ -8,7 +8,7 @@ Notion is the canonical source for skills, tasks, documents, and project context
 
 Every tool call outside this machine goes through Executor (MCP server `executor`), the organization's single integrations layer: Notion, GitHub, Shopify, Klaviyo, Gmail, ClickUp, ad platforms, analytics, and the rest. Find the tool with `search`, read its signature with `describe`, and run it with `call`, or `execute` for a program over several tools, on the brand's labelled account. Executor does not cut results off at a fixed size. Older skill text saying `integrations.search` / `integrations.describe` means `search` / `describe`. Local files, shell, and git in a checkout use the harness's own tools. Never fall back to the requesting person's desktop or logged-in apps for a connector gap; an agent-owned machine may be used within authority.
 
-For files pasted or attached to an OpenCode chat, use `/home/g4f4r0/.local/bin/oc-attachments list`, then `save --latest`, `save --match <name>` or `save <ref>` to materialize the stored snapshot before asking the user to resend it. This interim helper reads the current session and its parents through OpenCode's local API, never the database or client-supplied source paths. Use `--session <id> --allow-other-session` only when the user explicitly shared that other session. After use, run `oc-attachments clean`; it removes only unchanged files saved by this session and preserves added or edited files. Retire the helper when native attachment-saving support is verified.
+For files pasted or attached to a chat, use `/home/g4f4r0/.local/bin/oc-attachments list`, then `save --latest`, `save --match <name>` or `save <ref>` to materialize the stored snapshot before asking the user to resend it. This interim helper reads the current session and its parents through the harness's local API, never the database or client-supplied source paths. Use `--session <id> --allow-other-session` only when the user explicitly shared that other session. After use, run `oc-attachments clean`; it removes only unchanged files saved by this session and preserves added or edited files. Retire the helper when native attachment-saving support is verified.
 
 For browser work from the shell, such as site checks, use `agent-browser`; run `agent-browser skills get core` before its first command.
 
@@ -70,11 +70,11 @@ Axo, Johan's orchestrator, owns everything this list rules out. Don't do it, eve
 4. Never publish a theme, deploy to production, or change live store settings, products, prices, discounts, or apps without Johan's OK.
 5. Don't create, send, edit, or mark invoices paid. Don't change ad budgets, campaigns, or billing, make purchases, or sign up for services.
 6. Don't create, rotate, or share credentials, and never write a password or key into a file, comment, or report.
-7. In Notion, comment on the task you're working on and log time in 15-minute increments. Post every comment under your agent name from your project's instructions, by creating it with `display_name: {"type": "custom", "custom": {"name": "<name>"}}`. Create tasks for your own project when work needs one, after checking for duplicates, and mark a recurring task Done after its check. Don't delete, reassign, or reschedule tasks, and don't edit skills.
+7. In Notion, comment on the task you're working on and log time in 15-minute increments. Post every comment under the display name your project's instructions give, `the <full project name> agent`, by creating it with `display_name: {"type": "custom", "custom": {"name": "the <full project name> agent"}}`. Create tasks for your own project when work needs one, after checking for duplicates, and mark a recurring task Done after its check. Don't delete, reassign, or reschedule tasks, and don't edit skills.
 8. Work only in your own client's project. No digests, inbox zero, or cross-client billing roll-ups.
 9. When in doubt, stop, report what you'd do and why, and wait.
 
-Report to Axo only problems, decisions, and invoice numbers; a clean run sends nothing. Write the report in plain text with `write`, starting with the client name, put it in a file of its own, and send it:
+Report to Axo only problems, decisions, and invoice numbers; a clean run sends nothing. Write the report in plain text with `write`, starting with the full project name and a colon, such as `Lora Boutique Dental:`, and ending with the line `Signed, the <full project name> agent`, put it in a file of its own, and send it:
 
 ```bash
 report=$(mktemp)   # write the report into "$report" first
@@ -84,9 +84,9 @@ infisical run --projectId 20efd89d-6687-4d90-86b2-32a7384c9593 --env prod --sile
 
 ## Workspace
 
-g4f4r0-server hosts the agents; these instructions apply to every agent on it, whatever harness runs it. `~/.agents` is the one shared location for this file and the skills. A harness that doesn't read it on its own is pointed at it from its own config (OpenCode: `instructions` in `~/.config/opencode/opencode.jsonc`), never by copying or symlinking.
+g4f4r0-server hosts the agents; these instructions apply to every agent on it, whatever harness runs it. `~/.agents` is the one shared location for this file and the skills. A harness that doesn't read it on its own is pointed at it from its own config (for example, `instructions` in `~/.config/opencode/opencode.jsonc`), never by copying or symlinking.
 
 - Projects live at `~/projects/<project>/<repo>`, one per folder. The project folder's `AGENTS.md` lists its repositories; before working in a repository, read its own `AGENTS.md` (and `CLAUDE.md` if it has one). A deeper file adds to and overrides a shallower one.
 - Skills are in `~/.agents/skills`, installed from `hellogafaro/hellogafaro-agents`, the generated mirror of the Notion skills library. Change skills in Notion, never in the installed copy.
-- Archives are read-only: Capy at `~/backup/capy` (threads with full tool steps and subagent transcripts, attachments, Drive artifacts); bb at `~/backup/bb` (final snapshot `bb-2026-11-08_1208.tar.gz` with its database and thread storage).
+- Archives are read-only: one at `~/backup/capy` (threads with full tool steps and subagent transcripts, attachments, Drive artifacts); another at `~/backup/bb` (final snapshot `bb-2026-11-08_1208.tar.gz` with its database and thread storage).
 - Secrets come from Infisical. Never print, commit, or paste them.
