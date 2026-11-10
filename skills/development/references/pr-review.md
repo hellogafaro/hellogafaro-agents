@@ -46,19 +46,21 @@ If your own review can't finish, publish only the status error "Review failed" (
 
 If `gh pr view <n> -R <repo> --json headRefOid` no longer equals EVENT, publish nothing and go to step 7 with status `skipped`. The GitHub plugin skips the run and resolves its claim.
 
-Otherwise publish the result once, through the GitHub plugin's `publishReview`, with Executor's `call` tool, `tools.executor.call` in Code Mode. Pass the input as an object, exactly as below. Never put the call inside a code string for Executor's `execute`: a line break in the review body then ends the string and the program fails to parse.
+Otherwise publish the result once, through the GitHub plugin's `publishReview`, with Executor's `call` tool, `tools.executor.call` in Code Mode. Write the program in this shape, one property per line, filling in only the `input` object. Never put the call inside a code string for Executor's `execute`: a line break in the review body then ends the string and the program fails to parse.
 
 ```js
-return await tools.executor.call({ calls: { path: "tools.opencode.rpc.call", input: {
-  path: { rpcID: "github", method: "publishReview" },
-  body: { input: {
-    runID: "RUN",
-    head: "EVENT",
-    review: { body: "<review body>", comments: [{ path: "<file>", line: <line>, body: "<comment>" }] },
-    label: "reviewed",
-    status: { state: "success", description: "<result line>" },
-  } },
-} } })
+const input = {
+  runID: "RUN",
+  head: "EVENT",
+  review: {
+    body: "<review body>",
+    comments: [{ path: "<file>", line: <line>, body: "<comment>" }],
+  },
+  label: "reviewed",
+  status: { state: "success", description: "<result line>" },
+};
+const rpc = { path: { rpcID: "github", method: "publishReview" }, body: { input } };
+return await tools.executor.call({ calls: { path: "tools.opencode.rpc.call", input: rpc } });
 ```
 
 - It posts one `COMMENT` review of EVENT, the label and the `review` status as the app's bot, on this pull request only. It takes no repository, URL, token or review event.
@@ -66,7 +68,7 @@ return await tools.executor.call({ calls: { path: "tools.opencode.rpc.call", inp
 - The plugin adds `<!-- pr-review sha=EVENT -->` to the body. Do not supply any `<!-- pr-review` comment in the body, including `<!-- pr-review-finding`; finding markers go only in inline comments. The plugin strips complete commit-marker comments and refuses any remaining marker opener.
 - `description` is the result line, at most 140 characters. `state` is failure only when this review posted a new high confirmed finding, otherwise success.
 - When the review failed (step 4, or the prompt's fallback), send only `runID`, `head` and `status: { state: "error", description: "Review failed" }`.
-- Call it once. If the call pauses for approval, fails, or its outcome is unknown, don't repeat it and don't publish another way; go to step 7 with status `error`. The plugin then fails the run from what GitHub shows. A review or status posted with `gh` or any other account does not count.
+- Call it once. A `SyntaxError` or `ParseError` means the program never ran and nothing was published: fix the program and run it again. If the call pauses for approval, fails, or its outcome is unknown, don't repeat it and don't publish another way; go to step 7 with status `error`. The plugin then fails the run from what GitHub shows. A review or status posted with `gh` or any other account does not count.
 - Upload every visual asset the review posts (screenshots, before/after images, diagrams) to the `g4f4r0-files` bucket by following /home/g4f4r0/.agents/skills/visualize/references/publishing.md, calling its R2 tools through Executor's `execute` (`base64 -w0 <file>` gives the body), and embed each one by its `https://files.g4f4r0.dev/<key>` URL.
 
 Each comment reads:
