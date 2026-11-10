@@ -47,8 +47,7 @@ selection stable while still removing invalid values from the result set.
 ## Pull requests
 
 - Use `gh pr` for PR creation, checks, status, and review data.
-- Base the PR body on the actual diff and commits.
-- Include Summary, QA, and Notes.
+- Write the title and body as "Pull requests" in `development/references/git-and-prs.md` defines: a `type: imperative summary` title, and a body with Summary, QA and Notes, based on the actual diff.
 - Do not invent issue links, reviewers, labels, or test results.
 - Before marking ready, check branch status and CI when available.
 - Engineering completion requires meaningful proof backed by real checks, including for small nonvisual changes. Use the smallest useful evidence: a fresh screenshot or clip, a measured comparison, or a compact evidence table or diagram. Use a canvas only when substantial information needs a separate artifact or the user explicitly requests one; completion or review alone never requires it. Evidence must support the outcome and preserve the reviewed revision and actual verdict when applicable. A decorative diagram or test-count summary alone is not proof. Keep detailed evidence and operational follow-ups in the handoff or PR; keep final chat concise.
@@ -57,19 +56,6 @@ selection stable while still removing invalid values from the result set.
 - The reviewer returns findings, verified/failed/unverified checks, verdict, reviewed head SHA, and proposed review text. Before posting a human-facing review or reply, show the exact draft and destination and obtain approval. Read existing reviews to avoid duplicates, then verify any authorized publication and reviewed revision.
 - Use a formal GitHub review where the authenticated identity permits it. If the shared identity authored the PR and GitHub rejects self-approval, publish the independent review as a PR comment with the reviewer attribution and reviewed head SHA. Never claim that a comment satisfies a required platform approval.
 - Fix required findings and obtain review of the affected changes on the new head before claiming completion. A prior verdict does not cover a changed head, and unverified required checks cannot pass. If there is no PR, review the exact local revision and return the verdict in the handoff; do not create or publish a PR merely to satisfy this rule without authorization.
-
-Default PR body:
-
-```markdown
-## Summary
-- What changed.
-
-## QA
-- Command, test, or manual check actually run.
-
-## Notes
-- Caveats, screenshots, links, migrations, rollback notes, or `None`.
-```
 
 ## Merges and releases
 

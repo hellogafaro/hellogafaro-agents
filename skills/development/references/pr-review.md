@@ -46,10 +46,10 @@ If your own review can't finish, publish only the status error "Review failed" (
 
 If `gh pr view <n> -R <repo> --json headRefOid` no longer equals EVENT, publish nothing and go to step 7 with status `skipped`. The GitHub plugin skips the run and resolves its claim.
 
-Otherwise publish the result once, through the GitHub plugin's `publishReview`, in one Executor `execute` program:
+Otherwise publish the result once, through the GitHub plugin's `publishReview`, with Executor's `call` tool, `tools.executor.call` in Code Mode. Pass the input as an object, exactly as below. Never put the call inside a code string for Executor's `execute`: a line break in the review body then ends the string and the program fails to parse.
 
 ```js
-return await tools.opencode.rpc.call({
+return await tools.executor.call({ calls: { path: "tools.opencode.rpc.call", input: {
   path: { rpcID: "github", method: "publishReview" },
   body: { input: {
     runID: "RUN",
@@ -58,7 +58,7 @@ return await tools.opencode.rpc.call({
     label: "reviewed",
     status: { state: "success", description: "<result line>" },
   } },
-})
+} } })
 ```
 
 - It posts one `COMMENT` review of EVENT, the label and the `review` status as the app's bot, on this pull request only. It takes no repository, URL, token or review event.
