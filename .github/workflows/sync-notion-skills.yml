@@ -3,7 +3,7 @@ name: Sync Notion skills
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 3 * * *"
+    - cron: "17 3,9,15,21 * * *"
 
 permissions:
   contents: write
@@ -42,14 +42,14 @@ jobs:
           echo "::add-mask::$NOTION_ACCESS_TOKEN"
           NOTION_ACCESS_TOKEN="$NOTION_ACCESS_TOKEN" node scripts/sync-notion-skills.mjs
 
-      - name: Validate generated skills
+      - name: Validate generated skills and instructions
         run: npm run check
 
       - name: Commit generated changes
         run: |
-          git add -A skills
+          git add -A skills instructions
           if git diff --staged --quiet; then
-            echo "Skills are already current."
+            echo "Skills and instructions are already current."
             exit 0
           fi
           git diff --staged --check
@@ -57,5 +57,5 @@ jobs:
           GIT_AUTHOR_EMAIL="41898282+github-actions[bot]@users.noreply.github.com" \
           GIT_COMMITTER_NAME="github-actions[bot]" \
           GIT_COMMITTER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com" \
-            git commit -m "chore: sync skills from Notion"
+            git commit -m "chore: sync skills and instructions from Notion"
           git push origin HEAD:main
