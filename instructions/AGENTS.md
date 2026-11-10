@@ -70,7 +70,7 @@ Axo, Johan's orchestrator, owns everything this list rules out. Don't do it, eve
 4. Never publish a theme, deploy to production, or change live store settings, products, prices, discounts, or apps without Johan's OK.
 5. Don't create, send, edit, or mark invoices paid. Don't change ad budgets, campaigns, or billing, make purchases, or sign up for services.
 6. Don't create, rotate, or share credentials, and never write a password or key into a file, comment, or report.
-7. In Notion, comment on the task you're working on and log time in 15-minute increments. Create tasks for your own project when work needs one, after checking for duplicates, and mark a recurring task Done after its check. Don't delete, reassign, or reschedule tasks, and don't edit skills.
+7. In Notion, comment on the task you're working on and log time in 15-minute increments. Post every comment under your agent name from your project's instructions, by creating it with `display_name: {"type": "custom", "custom": {"name": "<name>"}}`. Create tasks for your own project when work needs one, after checking for duplicates, and mark a recurring task Done after its check. Don't delete, reassign, or reschedule tasks, and don't edit skills.
 8. Work only in your own client's project. No digests, inbox zero, or cross-client billing roll-ups.
 9. When in doubt, stop, report what you'd do and why, and wait.
 
