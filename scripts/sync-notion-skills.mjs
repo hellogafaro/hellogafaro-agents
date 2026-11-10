@@ -4,62 +4,15 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const notionApi = "https://api.notion.com/v1";
-const notionVersion = "2026-03-11";
+import { disableModelInvocation, normalizeNotionMarkdown } from "./markdown.mjs";
+import { createNotion } from "./notion.mjs";
+
 const root = path.resolve(import.meta.dirname, "..");
 
 function required(name) {
   const value = process.env[name]?.trim();
   if (!value) throw new Error(`${name} is required.`);
   return value;
-}
-
-async function notionRequest(pathname, token, init = {}) {
-  for (let attempt = 0; attempt < 4; attempt += 1) {
-    const response = await fetch(`${notionApi}${pathname}`, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Notion-Version": notionVersion,
-        ...(init.body === undefined ? {} : { "Content-Type": "application/json" }),
-      },
-    });
-
-    if (response.ok) return response.json();
-    if ((response.status === 429 || response.status >= 500) && attempt < 3) {
-      const retryAfter = Number(response.headers.get("retry-after"));
-      const delay = Number.isFinite(retryAfter) ? retryAfter * 1_000 : 1_000 * 2 ** attempt;
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      continue;
-    }
-
-    const body = await response.text();
-    throw Object.assign(new Error(`Notion ${pathname} failed (${response.status}): ${body.slice(0, 500)}`), {
-      status: response.status,
-    });
-  }
-
-  throw new Error(`Notion ${pathname} failed after retries.`);
-}
-
-async function getSkillPages(dataSourceId, token) {
-  const pages = [];
-  let cursor;
-
-  do {
-    const response = await notionRequest(`/data_sources/${dataSourceId}/query`, token, {
-      method: "POST",
-      body: JSON.stringify({
-        page_size: 100,
-        ...(cursor === undefined ? {} : { start_cursor: cursor }),
-      }),
-    });
-
-    pages.push(...response.results);
-    cursor = response.has_more ? response.next_cursor : undefined;
-  } while (cursor !== undefined && cursor !== null);
-
-  return pages;
 }
 
 export function parseFrontmatter(markdown) {
@@ -121,10 +74,10 @@ function normalizeId(value) {
   return value.replaceAll("-", "").toLowerCase();
 }
 
-async function downloadSkill(page, token, directory) {
+async function downloadSkill(page, notion, directory) {
   let archiveRef;
   try {
-    archiveRef = await notionRequest(`/ai/skills/${page.id}`, token);
+    archiveRef = await notion.request(`/ai/skills/${page.id}`);
   } catch (error) {
     if (error.status === 400 && error.message.includes("is not a skill")) {
       console.log(`Skipping ${page.id}: Notion does not treat this page as a skill.`);
@@ -160,37 +113,77 @@ async function downloadSkill(page, token, directory) {
   if (!name || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(name)) {
     throw new Error(`Invalid exported skill name for page ${page.id}.`);
   }
+  if (!metadata.description?.trim()) throw new Error(`Skill ${name} has no description.`);
   if (normalizeId(metadata.notion_page_id ?? "") !== normalizeId(page.id)) {
     throw new Error(`Exported page ID does not match ${page.id}.`);
   }
 
-  return { name, directory: path.dirname(skillFile) };
+  return { name, directory: path.dirname(skillFile), skillFile };
+}
+
+/** Returns false only when the Notion Skills page has its Auto-invoke checkbox unticked. */
+export function isAutoInvoked(page) {
+  return page.properties?.["Auto-invoke"]?.checkbox !== false;
+}
+
+/** Rejects a global instructions export that is empty, cut short or missing its title. */
+export function assertInstructions(markdown) {
+  if (!markdown.startsWith("# ")) throw new Error("Global instructions must start with a level-one heading.");
+  if (markdown.split("\n").filter((line) => line.trim()).length < 10) {
+    throw new Error("Global instructions export is too short to be complete.");
+  }
+}
+
+/** Reads the repository's Notion IDs from agents.json. */
+export async function getConfig(directory = root) {
+  const config = JSON.parse(await readFile(path.join(directory, "agents.json"), "utf8"));
+  for (const key of ["instructions", "skills", "projects"]) {
+    if (!/^[0-9a-f-]{32,36}$/iu.test(config[key] ?? "")) throw new Error(`agents.json needs a Notion ID for "${key}".`);
+  }
+  return config;
 }
 
 async function main() {
-  const token = required("NOTION_ACCESS_TOKEN");
-  const dataSourceId = required("NOTION_SKILLS_DATA_SOURCE_ID");
-  const temporary = await mkdtemp(path.join(os.tmpdir(), "notion-skills-sync-"));
+  const notion = createNotion(required("NOTION_ACCESS_TOKEN"));
+  const config = await getConfig();
+  const temporary = await mkdtemp(path.join(os.tmpdir(), "notion-agents-sync-"));
   const stagedSkills = path.join(temporary, "skills");
+  const stagedInstructions = path.join(temporary, "instructions");
 
   try {
     await mkdir(stagedSkills);
-    const pages = await getSkillPages(dataSourceId, token);
+    await mkdir(stagedInstructions);
+    const pages = await notion.queryDataSource(config.skills);
     if (pages.length === 0) throw new Error("The Notion Skills database returned no pages.");
 
     const names = new Set();
+    const manual = [];
     for (const page of pages) {
-      const skill = await downloadSkill(page, token, temporary);
+      const skill = await downloadSkill(page, notion, temporary);
       if (!skill) continue;
       if (names.has(skill.name)) throw new Error(`Duplicate exported skill name: ${skill.name}`);
       names.add(skill.name);
+      if (!isAutoInvoked(page)) {
+        await writeFile(skill.skillFile, disableModelInvocation(await readFile(skill.skillFile, "utf8")));
+        manual.push(skill.name);
+      }
       await cp(skill.directory, path.join(stagedSkills, skill.name), { recursive: true });
     }
+    if (names.size === 0) throw new Error("Notion exported no skills.");
 
-    const destination = path.join(root, "skills");
-    await rm(destination, { recursive: true, force: true });
-    await cp(stagedSkills, destination, { recursive: true });
-    console.log(`Synced ${names.size} skills from Notion.`);
+    const instructions = normalizeNotionMarkdown(await notion.getPageMarkdown(config.instructions));
+    assertInstructions(instructions);
+    await writeFile(path.join(stagedInstructions, "AGENTS.md"), instructions);
+
+    for (const [staged, name] of [
+      [stagedSkills, "skills"],
+      [stagedInstructions, "instructions"],
+    ]) {
+      const destination = path.join(root, name);
+      await rm(destination, { recursive: true, force: true });
+      await cp(staged, destination, { recursive: true });
+    }
+    console.log(`Synced ${names.size} skills (${manual.length} without auto-invoke: ${manual.join(", ") || "none"}) and the global instructions from Notion.`);
   } finally {
     await rm(temporary, { recursive: true, force: true });
   }
