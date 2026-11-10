@@ -4,6 +4,7 @@ name: |-
 description: |-
   Imports or publishes explicitly requested Minicoton or Somomu ClickUp sync, with Notion as the execution record and verified results and actual time in Spanish.
 notion_page_id: 3dffc798-2e43-8174-ab15-e851ed1722b5
+disable-model-invocation: true
 ---
 
 # shopiworks-clickup-sync
