@@ -48,7 +48,9 @@ None.
 
 ## Merges and releases
 
-- Merge only when both hold: the user authorized it in this thread, either by asking to merge or with an earlier end-to-end or go-live instruction, and the current head is fully green, meaning all checks passed, the review is posted on that head, and every finding is fixed or resolved. If authorization is missing, ask once it's green. If it isn't green, fix and wait. If no review arrives within about 10 minutes of the checks finishing, or the PR is outside the review automation's filters, run the `review` agent on the current head and treat its result as the review.
+- Before every merge, read the current head's checks and reviews. While any check is pending or queued, or a review is still running, wait for it to finish; a pending `review` status counts. Never merge over a pending check or review.
+- Merge only when both hold: the user authorized it in this thread, either by asking to merge or with an earlier end-to-end or go-live instruction, and the current head is green. Green means every check finished and passed, and every review that ran is posted on that head with each finding fixed or resolved. A pull request with no checks and no review running is green, so it can be merged as soon as it is authorized.
+- If authorization is missing, ask once it's green. If a check failed or a finding is open, fix it, push, and wait for the new head's checks and review. If a pending `review` status has posted nothing about 10 minutes after the other checks finished, run the `review` agent on the current head and treat its result as the review.
 - Enable auto-merge, tag, or release only when the user asks for it in this thread.
 - Release notes come from commits, PRs, and the changelog, grouped into user-facing changes, fixes, migrations, and known risks.
 - Distinguish merged, deployed, and verified in production; a merge announces none of the latter.

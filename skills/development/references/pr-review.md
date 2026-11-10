@@ -69,7 +69,7 @@ return await tools.executor.call({ calls: { path: "tools.opencode.rpc.call", inp
 - `description` is the result line, at most 140 characters. `state` is failure only when this review posted a new high confirmed finding, otherwise success.
 - When the review failed (step 4, or the prompt's fallback), send only `runID`, `head` and `status: { state: "error", description: "Review failed" }`.
 - Call it once. A `SyntaxError` or `ParseError` means the program never ran and nothing was published: fix the program and run it again. If the call pauses for approval, fails, or its outcome is unknown, don't repeat it and don't publish another way; go to step 7 with status `error`. The plugin then fails the run from what GitHub shows. A review or status posted with `gh` or any other account does not count.
-- Upload every visual asset the review posts (screenshots, before/after images, diagrams) to the `g4f4r0-files` bucket by following /home/g4f4r0/.agents/skills/visualize/references/publishing.md, calling its R2 tools through Executor's `execute` (`base64 -w0 <file>` gives the body), and embed each one by its `https://files.g4f4r0.dev/<key>` URL.
+- Publish every visual asset the review posts (screenshots, before/after images, diagrams) with `tools.opencode.artifact_upload`, as `visualize/references/publishing.md` says, and embed each one by the link it returns.
 
 Each comment reads:
 
