@@ -278,13 +278,14 @@ test("a project without an instructions page still gets its files", async () => 
 });
 
 test("removes managed files when a project leaves Notion or its Folder is cleared", async () => {
+  write(path.join(sandbox.home, "projects/beta/AGENTS.md"), "hand-made beta");
   assert.equal((await run("update")).code, 0);
   write(path.join(sandbox.home, "projects/beta/notes.md"), "mine");
   notion.projects = [project("Alpha", "alpha")];
 
   const result = await run("update");
   assert.equal(result.code, 0, result.output);
-  assert.equal(fs.existsSync(path.join(sandbox.home, "projects/beta/AGENTS.md")), false);
+  assert.equal(read(path.join(sandbox.home, "projects/beta/AGENTS.md")), "hand-made beta");
   assert.equal(fs.existsSync(path.join(sandbox.home, "projects/beta/notion.json")), false);
   assert.equal(read(path.join(sandbox.home, "projects/beta/notes.md")), "mine");
   assert.ok(fs.existsSync(path.join(sandbox.home, "projects/alpha/AGENTS.md")));
@@ -368,6 +369,45 @@ test("install sets up the timer and remove takes out only what it created", asyn
   assert.equal(fs.readlinkSync(path.join(sandbox.home, ".agents/skills/analyze")), path.join(sandbox.repo, "skills/analyze"));
   assert.ok(fs.existsSync(path.join(sandbox.home, ".config/systemd/user/skills-sync.timer")));
   assert.equal(fs.existsSync(path.join(sandbox.state, "manifest.json")), false);
+  const after = await runWithInfisical("exit 1", "status");
+  assert.equal(after.code, 1);
+  assert.match(after.output, /^Not installed/u);
+});
+
+function runWithInfisical(script, ...args) {
+  const bin = path.join(sandbox.base, "bin");
+  write(path.join(bin, "infisical"), `#!/bin/sh\n${script}\n`);
+  fs.chmodSync(path.join(bin, "infisical"), 0o755);
+  const env = { ...process.env, ...gitEnv, PATH: `${bin}:${process.env.PATH}`, NOTION_API_URL: `http://127.0.0.1:${server.address().port}` };
+  delete env.NOTION_ACCESS_TOKEN;
+  return new Promise((resolve) => {
+    execFile(process.execPath, [cli, ...args, "--home", sandbox.home, "--repo", sandbox.repo], { env }, (error, stdout, stderr) =>
+      resolve({ code: error ? error.code : 0, output: stdout + stderr }),
+    );
+  });
+}
+
+const infisicalRun = 'while [ "$1" != "--" ]; do shift; done; shift; NOTION_ACCESS_TOKEN=from-infisical exec "$@"';
+
+test("gets the token through infisical run and keeps the child's exit code", async () => {
+  const ok = await runWithInfisical(infisicalRun, "update");
+  assert.equal(ok.code, 0, ok.output);
+  assert.ok(fs.existsSync(path.join(sandbox.home, "projects/alpha/AGENTS.md")));
+
+  const holder = spawn("flock", [path.join(sandbox.state, "lock"), "-c", "sleep 3"]);
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const locked = await runWithInfisical(infisicalRun, "update");
+  holder.kill();
+  assert.equal(locked.code, 75, locked.output);
+  assert.equal(JSON.parse(read(path.join(sandbox.state, "last-run.json"))).ok, true);
+});
+
+test("an infisical failure is logged and recorded, and nothing changes", async () => {
+  const result = await runWithInfisical("echo 'not logged in' >&2; exit 1", "update");
+  assert.equal(result.code, 1);
+  assert.match(result.output, /Could not read NOTION_ACCESS_TOKEN through infisical run \(exit 1\); nothing changed/u);
+  assert.equal(JSON.parse(read(path.join(sandbox.state, "last-run.json"))).ok, false);
+  assert.equal(fs.existsSync(path.join(sandbox.home, ".agents/skills")), false);
 });
 
 test("status reports drift", async () => {

@@ -326,9 +326,10 @@ function writeManaged(context, manifest, file, content, log) {
 }
 
 function removeManaged(context, manifest, file, log) {
+  const entry = manifest.files[file];
   const stats = lstat(file);
   if (stats) {
-    if (!stats.isFile() || hash(fs.readFileSync(file)) !== manifest.files[file].hash) {
+    if (!stats.isFile() || hash(fs.readFileSync(file)) !== entry.hash) {
       const saved = backup(context, file, { move: true });
       log.warn(`${file} changed since it was generated; backed up to ${saved}.`);
     } else {
@@ -336,6 +337,7 @@ function removeManaged(context, manifest, file, log) {
     }
     log.change(`Removed ${file}; its project no longer has this Folder in Notion.`);
   }
+  restore(entry.original, file, log);
   delete manifest.files[file];
 }
 
@@ -488,6 +490,10 @@ function remove(context, log, manifest) {
 }
 
 function status(context) {
+  if (!fs.existsSync(context.manifestPath)) {
+    console.log(`Not installed: ${context.manifestPath} does not exist.`);
+    return 1;
+  }
   const manifest = loadManifest(context);
   const lastRun = readJson(context.lastRunPath, null);
   const lines = [];
@@ -540,18 +546,26 @@ function runWithToken(context, argv) {
   if (process.env.NOTION_ACCESS_TOKEN) return null;
   if (process.env.HELLOGAFARO_AGENTS_CHILD) throw new StopError("infisical run did not provide NOTION_ACCESS_TOKEN.");
   const startedAt = new Date().toISOString();
+  fs.mkdirSync(context.state, { recursive: true });
+  const resultFile = path.join(context.state, `child-${process.pid}`);
+  fs.rmSync(resultFile, { force: true });
   const result = spawnSync(
     "infisical",
-    ["run", "--projectId", infisicalProject, "--env", "prod", "--silent", "--", "env", `HOME=${context.home}`, "HELLOGAFARO_AGENTS_CHILD=1", process.execPath, fileURLToPath(import.meta.url), ...argv],
+    [
+      "run", "--projectId", infisicalProject, "--env", "prod", "--silent", "--",
+      "env", `HOME=${context.home}`, "HELLOGAFARO_AGENTS_CHILD=1", `HELLOGAFARO_AGENTS_RESULT=${resultFile}`,
+      process.execPath, fileURLToPath(import.meta.url), ...argv,
+    ],
     { stdio: "inherit", env: { ...process.env, HOME: os.userInfo().homedir } },
   );
-  const lastRun = readJson(context.lastRunPath, null);
-  if (result.status !== 0 && (!lastRun || lastRun.startedAt < startedAt)) {
-    const message = `Could not read NOTION_ACCESS_TOKEN through infisical run (${result.error?.message ?? `exit ${result.status}`}); nothing changed.`;
-    createLog(context).error(message);
-    writeJson(context.lastRunPath, { command: argv[0], startedAt, finishedAt: new Date().toISOString(), ok: false, errors: [message], warnings: [], changes: [] });
-  }
-  return result.status ?? 1;
+  const childCode = fs.existsSync(resultFile) ? Number(fs.readFileSync(resultFile, "utf8")) : null;
+  fs.rmSync(resultFile, { force: true });
+  if (childCode !== null) return Number.isInteger(childCode) ? childCode : 1;
+
+  const message = `Could not read NOTION_ACCESS_TOKEN through infisical run (${result.error?.message ?? `exit ${result.status}`}); nothing changed.`;
+  createLog(context).error(message);
+  writeJson(context.lastRunPath, { command: argv[0], startedAt, finishedAt: new Date().toISOString(), ok: false, errors: [message], warnings: [], changes: [] });
+  return 1;
 }
 
 async function main(argv) {
@@ -597,3 +611,4 @@ try {
   console.error(error instanceof StopError ? error.message : error.stack);
   process.exitCode = 1;
 }
+if (process.env.HELLOGAFARO_AGENTS_RESULT) fs.writeFileSync(process.env.HELLOGAFARO_AGENTS_RESULT, String(process.exitCode));
