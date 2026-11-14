@@ -2,7 +2,7 @@
 
 Discover the project's own launch commands, fixtures, authentication, test tools, and cleanup before adding instructions. Keep project-specific details in that project's repository or canonical context, not the organization skill.
 
-The recipe lives in the project's canonical context in Notion, as a Verification section of the project page or a linked document maintained through `documents-operations`, and a repository may mirror it in its own instructions file. `verify` reads it first on every run; a project without one reports behavioral checks as unverified until the recipe exists and has been run once end to end.
+The recipe lives in the project's canonical context in Notion, as a Verification section of the project page or a linked document maintained through `documents`, and a repository may mirror it in its own instructions file. `verify` reads it first on every run; a project without one reports behavioral checks as unverified until the recipe exists and has been run once end to end.
 
 A useful recipe names:
 

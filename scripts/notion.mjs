@@ -52,33 +52,5 @@ export function createNotion(token, { baseUrl = process.env.NOTION_API_URL ?? "h
     return pages;
   }
 
-  async function getChildren(blockId) {
-    const blocks = [];
-    let cursor;
-    do {
-      const query = new URLSearchParams({ page_size: "100", ...(cursor ? { start_cursor: cursor } : {}) });
-      const response = await request(`/blocks/${blockId}/children?${query}`);
-      blocks.push(...response.results);
-      cursor = response.has_more ? response.next_cursor : undefined;
-    } while (cursor);
-    return blocks;
-  }
-
-  async function getPageMarkdown(pageId) {
-    const response = await request(`/pages/${pageId}/markdown?markdown_version=v2`);
-    if (response.truncated) throw new Error(`Notion page ${pageId} markdown is truncated.`);
-    if (response.unknown_block_ids?.length) {
-      throw new Error(`Notion page ${pageId} has ${response.unknown_block_ids.length} blocks that could not be exported.`);
-    }
-    if (typeof response.markdown !== "string") throw new Error(`Notion page ${pageId} returned no markdown.`);
-    return response.markdown;
-  }
-
-  return { request, queryDataSource, getChildren, getPageMarkdown };
-}
-
-/** Joins the plain text of a Notion rich text or title property. */
-export function getPlainText(property) {
-  const parts = property?.title ?? property?.rich_text ?? [];
-  return parts.map((part) => part.plain_text ?? part.text?.content ?? "").join("");
+  return { request, queryDataSource };
 }

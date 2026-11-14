@@ -12,20 +12,24 @@ Implement the accepted outcome with the smallest understandable change, whether 
 
 ## Establish the contract
 
-1. Read the request, project instructions, owning task, and relevant code. Identify the observable outcome, constraints, dependencies, and what must remain unchanged. Use `tasks-operations` for the work record when the work has or needs a task.
+1. Read the request, project instructions, owning task, and relevant code. Identify the observable outcome, constraints, dependencies, and what must remain unchanged. Use `tasks` for the work record when the work has or needs a task.
 2. Resolve observable facts yourself. Use `brainstorm` only for a product or design decision the evidence cannot settle. An investigation request does not authorize implementation.
-3. Name the data shape, caller behavior, and verification before editing. Reuse the project's established pattern. For a consequential choice with no clear precedent, compare distinct sketches or prototypes through `visualize` before committing to a shape.
+3. Name the data shape, caller behavior, and verification before editing. Reuse the project's established pattern. For a consequential choice with no clear precedent, compare distinct sketches or prototypes through `artifacts` before committing to a shape.
 4. For multi-part work, split into the fewest independently verifiable outcomes. Record only genuine blocking dependencies. Feature slices should exercise a narrow end-to-end path, not leave disconnected database, API, and UI tasks. Use compatible expand, migrate, contract steps when a wide migration cannot land safely at once.
 
 The contract is ready when each slice has an observable result and a feasible check. Keep a small request small; do not manufacture a specification or task for every code edit.
 
-Before changing the artifact, identify the claims and smallest final checks, capture the relevant baseline or reproduction, and select an evidence location. Confirm that the checks and intended publication are feasible within available access and authority. Save useful check output when it runs rather than reconstructing it from chat at closure. Follow `visualize` for screenshots, recordings, or comparisons. Retain meaningful checkpoints and final proof through cleanup; do not collect every tool action or fabricate a missing baseline.
+Before changing the artifact, identify the claims and smallest final checks, capture the relevant baseline or reproduction, and select an evidence location. Confirm that the checks and intended publication are feasible within available access and authority. Save useful check output when it runs rather than reconstructing it from chat at closure. Follow `artifacts` for screenshots, recordings, or comparisons. Retain meaningful checkpoints and final proof through cleanup; do not collect every tool action or fabricate a missing baseline.
 
 ## Choose the smallest solution
 
-Ask in order: is the change needed; does the codebase already do it; can the standard library, native platform, or an installed dependency do it; what is the smallest clear implementation left? A native control is suitable only when it meets the actual UX and accessibility requirements.
+Stop at the first step that works, for code or anything else:
 
-Preserve trust-boundary validation, security, error handling, data integrity, and accessibility. Small means less unnecessary machinery, not compressed code. For repetitive changes, prove one unit and use a rerunnable script or codemod when that makes the rest safer.
+1. Is the change needed? Drop what nobody asked for.
+2. Does something existing already do it: the project's own code or content, a template, past work, the standard library, the platform, or an installed dependency or tool? Reuse it. A native control fits only when it meets the real UX and accessibility needs.
+3. Otherwise make the smallest complete version.
+
+Never cut trust-boundary validation, security, error handling, data integrity, or accessibility to make it smaller. Small means less unnecessary machinery, not compressed code or copy. Logic with a branch, a loop, parsing, money, or security leaves one small test behind. For repetitive changes, prove one unit, then use a rerunnable script or codemod when that makes the rest safer. Report what you skipped or left unchecked.
 
 ## Execute and prove
 

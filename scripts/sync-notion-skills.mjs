@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { disableModelInvocation, normalizeNotionMarkdown } from "./markdown.mjs";
+import { disableModelInvocation } from "./markdown.mjs";
 import { createNotion } from "./notion.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -126,33 +126,21 @@ export function isAutoInvoked(page) {
   return page.properties?.["Auto-invoke"]?.checkbox !== false;
 }
 
-/** Rejects a global instructions export that is empty, cut short or missing its title. */
-export function assertInstructions(markdown) {
-  if (!markdown.startsWith("# ")) throw new Error("Global instructions must start with a level-one heading.");
-  if (markdown.split("\n").filter((line) => line.trim()).length < 10) {
-    throw new Error("Global instructions export is too short to be complete.");
-  }
-}
-
-/** Reads the repository's Notion IDs from agents.json. */
+/** Reads the Skills data source ID from notion.json. */
 export async function getConfig(directory = root) {
-  const config = JSON.parse(await readFile(path.join(directory, "agents.json"), "utf8"));
-  for (const key of ["instructions", "skills", "projects"]) {
-    if (!/^[0-9a-f-]{32,36}$/iu.test(config[key] ?? "")) throw new Error(`agents.json needs a Notion ID for "${key}".`);
-  }
+  const config = JSON.parse(await readFile(path.join(directory, "notion.json"), "utf8"));
+  if (!/^[0-9a-f-]{32,36}$/iu.test(config.skills ?? "")) throw new Error('notion.json needs a Notion ID for "skills".');
   return config;
 }
 
 async function main() {
   const notion = createNotion(required("NOTION_ACCESS_TOKEN"));
   const config = await getConfig();
-  const temporary = await mkdtemp(path.join(os.tmpdir(), "notion-agents-sync-"));
+  const temporary = await mkdtemp(path.join(os.tmpdir(), "notion-skills-sync-"));
   const stagedSkills = path.join(temporary, "skills");
-  const stagedInstructions = path.join(temporary, "instructions");
 
   try {
     await mkdir(stagedSkills);
-    await mkdir(stagedInstructions);
     const pages = await notion.queryDataSource(config.skills);
     if (pages.length === 0) throw new Error("The Notion Skills database returned no pages.");
 
@@ -171,19 +159,10 @@ async function main() {
     }
     if (names.size === 0) throw new Error("Notion exported no skills.");
 
-    const instructions = normalizeNotionMarkdown(await notion.getPageMarkdown(config.instructions));
-    assertInstructions(instructions);
-    await writeFile(path.join(stagedInstructions, "AGENTS.md"), instructions);
-
-    for (const [staged, name] of [
-      [stagedSkills, "skills"],
-      [stagedInstructions, "instructions"],
-    ]) {
-      const destination = path.join(root, name);
-      await rm(destination, { recursive: true, force: true });
-      await cp(staged, destination, { recursive: true });
-    }
-    console.log(`Synced ${names.size} skills (${manual.length} without auto-invoke: ${manual.join(", ") || "none"}) and the global instructions from Notion.`);
+    const destination = path.join(root, "skills");
+    await rm(destination, { recursive: true, force: true });
+    await cp(stagedSkills, destination, { recursive: true });
+    console.log(`Synced ${names.size} skills from Notion (${manual.length} without auto-invoke: ${manual.join(", ") || "none"}).`);
   } finally {
     await rm(temporary, { recursive: true, force: true });
   }

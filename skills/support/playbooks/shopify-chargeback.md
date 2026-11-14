@@ -2,7 +2,7 @@
 
 **You own a truthful, complete response and the merchant owns the decision to submit it.** Inspect the current dispute before deciding what evidence it needs. Never invent facts, overstate what evidence proves, or submit without explicit approval.
 
-1. Confirm the store and the owner. Find or create the owning task through `tasks-operations` when this is accepted work. Ask for the store if the request does not name it; never switch stores silently.
+1. Confirm the store and the owner. Find or create the owning task through `tasks` when this is accepted work. Ask for the store if the request does not name it; never switch stores silently.
 2. Inspect the live dispute: connected account data through the host's Shopify integration for order, customer, payment, and fulfillment facts; the browser only for the dispute record and response form shown in Shopify Admin. Capture reason, code, amount, deadline, status, identifiers, required fields, formats, and limits exactly as shown.
 3. Gather the case against the dispute reason from real sources only, through `investigate` where a claim needs confirming (tracking actually shows delivery, the address matches, the customer wrote what the merchant says).
 4. Build one self-contained file per live upload field and the complete text-field answers, in the merchant's plain voice through `write`.

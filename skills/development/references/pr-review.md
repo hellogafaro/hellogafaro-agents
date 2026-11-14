@@ -2,6 +2,8 @@
 
 The procedure for the main agent of the GitHub PR review automation. The automation prompt binds this run's values (`<repo>`, `<n>`, RUN, EVENT, SHORT, CHECKOUT, BASE, LAST, TITLE, BODY), sets the trust boundary and what the run may post, and points here. LAST_SHORT is the first 7 characters of LAST. Run every command in CHECKOUT.
 
+This run starts only from OpenCode's GitHub plugin, through OpenCode's automations plugin. Since 14 Nov 2026 automations run from Notion Code, which has no GitHub trigger, so this run doesn't start. Keep this procedure for when GitHub review automations move to Notion Code.
+
 ## 1. Range
 
 RANGE is BASE..EVENT. On a re-review (LAST is not none), run `git fetch origin LAST`; if LAST exists and differs from EVENT, RANGE is LAST..EVENT, limited to the files in `git diff --name-only BASE EVENT`. A `command` or `requested_action` in `<github>` means someone asked for this review: review even if this head was reviewed before.
@@ -28,6 +30,14 @@ DEPTH is deep when any of these hold, otherwise light:
 
 Copy, styles, markup, docs, tests, and small refactors with none of the above are light. Decide from these two commands alone; don't read files to triage.
 
+RISK rates the whole pull request, for the merge decision and the `risk:*` label:
+
+- high: DEPTH is deep, or this review keeps a high or security finding open;
+- medium: the change alters runtime behavior or anything customers see (application code, UI, copy, templates, prices, content that goes live on merge), or keeps a medium finding open;
+- low: only docs, tests, comments, internal tooling text, or a small refactor with no behavior change, and no finding above low is open.
+
+On a re-review, RISK never goes below the PR's current `risk:*` label (`gh pr view <n> -R <repo> --json labels`), because RANGE is only part of the PR.
+
 ## 4. Review
 
 Review RANGE yourself, following your own steps, and keep your `format: json` result as working data for step 5, not as your reply. Run no tests, skip OPEN, and `git grep` every name the diff renames or removes (env var, config key, flag, path, endpoint) for references that are now stale. Use `explore` only if a question needs a wide search of the codebase.
@@ -46,7 +56,7 @@ If your own review can't finish, publish only the status error "Review failed" (
 
 If `gh pr view <n> -R <repo> --json headRefOid` no longer equals EVENT, publish nothing and go to step 7 with status `skipped`. The GitHub plugin skips the run and resolves its claim.
 
-Otherwise publish the result once, through the GitHub plugin's `publishReview`, with Executor's `call` tool, `tools.executor.call` in Code Mode. Write the program in this shape, one property per line, filling in only the `input` object. Never put the call inside a code string for Executor's `execute`: a line break in the review body then ends the string and the program fails to parse.
+Otherwise publish the result once, through the GitHub plugin's `publishReview`, with Executor's `call` tool, `tools.executor.call` in Code Mode. The plugin names its RPC in `rpc` in `<github>`; use that value as RPC, never a fixed name. Write the program in this shape, one property per line, filling in only RPC and the `input` object. Never put the call inside a code string for Executor's `execute`: a line break in the review body then ends the string and the program fails to parse.
 
 ```js
 const input = {
@@ -56,20 +66,20 @@ const input = {
     body: "<review body>",
     comments: [{ path: "<file>", line: <line>, body: "<comment>" }],
   },
-  label: "reviewed",
+  risk: "RISK",
   status: { state: "success", description: "<result line>" },
 };
-const rpc = { path: { rpcID: "github", method: "publishReview" }, body: { input } };
+const rpc = { path: { rpcID: "RPC", method: "publishReview" }, body: { input } };
 return await tools.executor.call({ calls: { path: "tools.opencode.rpc.call", input: rpc } });
 ```
 
-- It posts one `COMMENT` review of EVENT, the label and the `review` status as the app's bot, on this pull request only. It takes no repository, URL, token or review event.
+- It posts one `COMMENT` review of EVENT, the `risk:*` label and the `review` status as the app's bot, on this pull request only, and swaps the `review:*` label to match the status. Each label group keeps exactly one value. It takes no repository, URL, token or review event.
 - Each high or medium finding is an inline comment, `path` and `line` on the RIGHT side of a diff line, at most 20. A finding outside the diff is one line in the body.
 - The plugin adds `<!-- pr-review sha=EVENT -->` to the body. Do not supply any `<!-- pr-review` comment in the body, including `<!-- pr-review-finding`; finding markers go only in inline comments. The plugin strips complete commit-marker comments and refuses any remaining marker opener.
 - `description` is the result line, at most 140 characters. `state` is failure only when this review posted a new high confirmed finding, otherwise success.
 - When the review failed (step 4, or the prompt's fallback), send only `runID`, `head` and `status: { state: "error", description: "Review failed" }`.
 - Call it once. A `SyntaxError` or `ParseError` means the program never ran and nothing was published: fix the program and run it again. If the call pauses for approval, fails, or its outcome is unknown, don't repeat it and don't publish another way; go to step 7 with status `error`. The plugin then fails the run from what GitHub shows. A review or status posted with `gh` or any other account does not count.
-- Publish every visual asset the review posts (screenshots, before/after images, diagrams) with `tools.opencode.artifact_upload`, as `visualize/references/publishing.md` says, and embed each one by the link it returns.
+- Publish every visual asset the review posts (screenshots, before/after images, diagrams) with `artifacts`, and embed each one by the link it returns.
 
 Each comment reads:
 
@@ -90,12 +100,10 @@ The review body, in order, with no greeting, praise, or summary:
 3. On a first review, up to 3 low findings, each as `- file:line: sentence`.
 4. Any unavailable note.
 
-Before the call, run `gh label create reviewed -R <repo> --color 5319E7 --description "Reviewed by the PR review automation"` (ignore an already-exists error), so the label `publishReview` adds keeps its color.
-
 ## 7. Reply
 
 Reply with only this one line of JSON:
 
 ```json
-{"repo":"","pr":0,"sha":"","since":null,"depth":"light|deep","new":0,"high":0,"fixed":0,"open":0,"status":"success|failure|error|skipped"}
+{"repo":"","pr":0,"sha":"","since":null,"depth":"light|deep","risk":"low|medium|high","new":0,"high":0,"fixed":0,"open":0,"status":"success|failure|error|skipped"}
 ```
