@@ -36,7 +36,7 @@ These database IDs are discovery entry points. In each run, fetch a source's cur
 - After a write, fetch the affected page and confirm the change persisted.
 - Search, read, create, and update pages with the `notion` MCP server. Query databases with Executor's `tools.notion.api.dataSources.postDatabaseQuery`, because Notion's own query tool has a monthly allowance on this plan. Post comments with `tools.notion.api.comments.createAComment` and `display_name` set to `{ type: "custom", custom: { name } }`, which Notion's own comment tool can't set. Find tools by what they do.
 - On every task you create or update, set the Done by people property to the person the Notion connection acts for. Sign every comment with a custom display name holding only your agent name.
-- Record only the actual duration and date in Timesheets. Ask when either is missing; never infer it. Never set a billable flag, and never record or report a time of day.
+- Record only the duration and date the user confirms in Timesheets. When either is missing, ask once with three suggested durations, recommended first, as [time-and-completion.md](references/time-and-completion.md) describes, and log only the one the user picks or types. Never set a billable flag, and never record or report a time of day.
 
 ## Workflow
 

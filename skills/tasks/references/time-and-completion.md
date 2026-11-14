@@ -2,7 +2,17 @@
 
 ## Time and completion
 
-Record only the actual duration and date in Timesheets. Ask when either is missing and never infer it. Preserve exact minutes in entries and reports; do not round them. Never set a billable flag or record or report a time of day. If an external API requires a start timestamp, use a date-only technical anchor at the start of the stated date and never mention that anchor to users or clients.
+Record only the duration and date the user confirms in Timesheets. Never log a duration the user has not picked or typed. Preserve exact minutes in entries and reports; do not round them. Never set a billable flag or record or report a time of day. If an external API requires a start timestamp, use a date-only technical anchor at the start of the stated date and never mention that anchor to users or clients.
+
+## Suggest time
+
+When the duration is missing, ask one question with three suggested durations so the user can answer with a number or type another amount. Compute each one with code from retained data, never by estimating in prose:
+
+1. Active time is the sum of gaps between consecutive messages and tool steps in this session's transcript, leaving out any gap over 15 minutes as idle. Recommend it by default.
+2. Comparable work is the median Minutes of Timesheets entries for similar tasks in the same Project, or the closest single entry when there is only one.
+3. Hands-on time is the sum of the gaps that end in a user message, with the same 15-minute idle limit, which covers reading, reviewing, and approving. When it matches one of the others, use the midpoint of the first two instead.
+
+Round suggestions to 5 minutes, drop duplicates, and put the recommended one first. Label each with its basis in a few plain words, without parentheses, for example `30 min, active time in this session`. When the date is also missing, ask for it in the same question with today as the default. Log the exact value the user picks or types.
 
 A task entry needs the task reference as its name, Owner, Task, Project, Date, and Minutes. A non-task entry such as a meeting omits Task, uses a short description, and uses the Meeting's single verified Project. Never set calculated Hours.
 
