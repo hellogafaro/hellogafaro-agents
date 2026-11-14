@@ -6,7 +6,7 @@ Determine whether the user explicitly requests ClickUp intake synchronization, p
 
 For intake, resolve Johan live and read the assigned ClickUp requests, descriptions, relevant comments, attachments, and links. Do not apply the outbound completed-work filter to intake. For publication, query relevant Notion tasks, result comments, deliverables, and Timesheets. Default to completed work supported by Timesheets. Publish incomplete work only when requested.
 
-Resolve the live Notion Projects and required schemas through `tasks-operations`. Through the connected ClickUp MCP, discover ClickUp's workspace, space, folder, lists, statuses, members, task fields, and time-entry schema. Match Project destinations by live name and hierarchy. Never guess or store mutable IDs or member mappings in this skill. Use [status mapping](status-mapping.md) for observed label profiles and discovery fallbacks; revalidate the target task’s available options before using a saved profile. Follow pagination until the scoped search, comments, and time entries are complete.
+Resolve the live Notion Projects and required schemas through `tasks`. Through the connected ClickUp MCP, discover ClickUp's workspace, space, folder, lists, statuses, members, task fields, and time-entry schema. Match Project destinations by live name and hierarchy. Never guess or store mutable IDs or member mappings in this skill. Use [status mapping](status-mapping.md) for observed label profiles and discovery fallbacks; revalidate the target task’s available options before using a saved profile. Follow pagination until the scoped search, comments, and time entries are complete.
 
 ## Match before creating
 

@@ -8,13 +8,13 @@ notion_page_id: 3fffc798-2e43-81a4-80ad-da81ba5d9d6c
 
 # marketing
 
-Turn a marketing request for a brand into a planned, executed, and measured piece of work. This skill routes and sequences; the loop skills (`research`, `investigate`, `brainstorm`, `implement`, `verify`, `reporting`, `write`, `deliver`) do the stages, the host's integrations are the hands on every platform, and `tasks-operations` keeps the record.
+Turn a marketing request for a brand into planned, executed, and measured work. This skill routes and sequences. The loop skills (`research`, `investigate`, `brainstorm`, `implement`, `verify`, `reporting`, `write`, `deliver`) do the stages, the host's integrations act on every platform, and `tasks` keeps the record.
 
 ## Enter
 
-1. Read the request and the project instructions. Identify the brand, its connected accounts from its project context, the goal in business terms (revenue, orders, leads, retention, awareness), the period, and the budget or constraints already set. Size the intake as described below and find or create the owning task through `tasks-operations` only when that calls for it.
-2. Match the request to exactly one playbook. When none fits, say so and fall back to the loop stages directly.
-3. Copy the playbook's steps into your todo list before acting and work them in order. Approval and measurement steps are never skipped.
+1. Read the request and the project instructions. Identify the brand, its connected accounts from its project context, the goal in business terms (revenue, orders, leads, retention, awareness), the period, and any budget or constraints already set. Size the intake as below, and find or create the owning task through `tasks` only when that calls for it.
+2. Match the request to exactly one playbook. When none fits, say so and run the loop stages directly.
+3. Copy the playbook's steps into your todo list before acting and work them in order. Never skip approval and measurement steps.
 
 | Request | Playbook |
 | --- | --- |
@@ -27,28 +27,28 @@ Turn a marketing request for a brand into a planned, executed, and measured piec
 
 Decide the path before the first step and say which one you took.
 
-- **Simple**: one clear change or question with a small blast radius, no money moved, no new data collected, and no customer-facing behavior changed. Read only the matching playbook and `verify`, and close through `deliver`. Where a playbook step says "through `investigate`" or "through `implement`", apply the step's intent (diagnose with evidence, make the smallest change) without opening those skills. Reproduce, change, verify on the surface, report. No task unless one exists or the user asked for one. A replayed reproduction that passes on the same surface is a passed check even when the project has no verification recipe; the recipe item alone is reported as unverified.
-- **Complex**: several parts, an unsettled design, dependencies, a customer-facing change, or more than one owner. Run the full playbook with intake, `brainstorm` for real forks, slices, and `deliver`. A change that collects personal data or feeds an audience also needs the consent basis stated in the contract.
-- **Data-critical**: the result depends on figures, comparisons, or patterns, or it will move money, budgets, inventory, or audiences by a computed amount. Every number goes through `analyze` before it is stated or acted on, with the script and data retained, and the approval step shows the computed figures. Data-critical adds to complex; it does not replace it.
+- A simple request is one clear change or question with a small blast radius, no money moved, no new data collected, and no customer-facing behavior changed. Where a playbook step says "through `investigate`" or "through `implement`", apply its intent (diagnose with evidence, make the smallest change) without opening those skills: reproduce, change, verify on the surface, report. A replayed reproduction that passes on the same surface is a passed check even when the project has no verification recipe; only the recipe item is reported as unverified.
+- A complex request has several parts, an unsettled design, dependencies, a customer-facing change, or more than one owner. Run the full playbook with intake, `brainstorm` for real forks, slices, and `deliver`. A change that collects personal data or feeds an audience also states its consent basis in the contract.
+- A data-critical request depends on figures, comparisons, or patterns, or will move money, budgets, inventory, or audiences by a computed amount. Every number goes through `analyze` before it is stated or acted on, with the script and data retained, and the approval step shows the computed figures. Data-critical adds to complex; it does not replace it.
 
 A request can move up a path mid-way when evidence shows it is bigger than it looked; it never moves down.
 
 ## Size the intake
 
-Intake is one lookup, not a ritual. When the request names a task, use it. Otherwise search Notion once for a task that already owns this work and attach to it. When none exists: a question, a tentative idea, or a read-only analysis needs no task; a small, clear change the user did not ask to record proceeds without one and the reply says so; accepted or substantial work gets its task created before the first change. At the end, close through `deliver` either way: it closes the task when one exists, and always cleans up and ends with the close-out list.
+Intake is one lookup, not a ritual. Use the task the request names; otherwise search Notion once for a task that already owns this work and attach to it. When accepted or substantial work has none, create it before the first change.
 
 ## Accounts and access
 
-Providers (Shopify, Klaviyo, Meta Ads, Google Ads, TikTok Ads, PostHog, Google Analytics, Search Console, Gmail) are reached through Executor, the organization's single integrations layer: call its `integrations.search` with the provider name to list that app's tools and connected accounts, `integrations.describe` for a tool's exact signature, then call the tool with the labelled account. A generic tool search will not find them; the integrations tools are the registry. Tools and accounts carry labels; use them, never a remembered id. Which account, property, pixel, or list belongs to a brand is a brand fact kept in that brand's Notion project context; resolve it there first and record it beside every figure. A tool that is unavailable, needs a reconnect, or returns an auth error is a gap to report with its recovery step, never something to work around. Save every response to a file and compute through `analyze`; never pull credentials or tokens into tool results, logs, or chat.
+Reach providers (Shopify, Klaviyo, Meta Ads, Google Ads, TikTok Ads, PostHog, Google Analytics, Search Console, Gmail) through Executor: `search` with the provider name lists that app's tools and connected accounts, and `describe` gives a tool's exact signature. A generic tool search will not find them; Executor's tools are the registry. Use the labels on tools and accounts, never a remembered id. Which account, property, pixel, or list belongs to a brand is a brand fact in its Notion project context; resolve it there first. A tool that is unavailable, needs a reconnect, or returns an auth error is a gap to report with its recovery step, never something to work around. Save every response to a file. Never pull credentials or tokens into tool results, logs, or chat.
 
-## Rules that hold in every playbook
+## Rules for every playbook
 
-- Read the brand's own context first: voice, offers, exclusions, past results, and open decisions in its Notion project. Keep brand-specific facts there, never in this skill.
-- Every number comes from a connected provider through the host's integrations and is computed through `analyze` from retained data, with provider, account, tool, date window, and metric definition recorded beside it. Platform dashboards differ on attribution and timing; name the difference when comparing.
+- Read the brand's own context in its Notion project first: voice, offers, exclusions, past results, and open decisions. Keep brand-specific facts there, never in this skill.
+- Every number comes from a connected provider and is computed through `analyze` from retained data, with provider, account, tool, date window, and metric definition recorded beside it. Platform dashboards differ on attribution and timing; name the difference when comparing.
 - Spend, audience, bid, budget, and send actions are writes. Each needs the user's explicit approval for that specific change, shown as the exact change on the exact account before it is made, and is verified on the platform afterwards.
-- Anything a customer will see (ad copy, creative, email, SMS, landing copy) is drafted through `write` in the brand's voice and approved before it is published or sent.
-- Define what success looks like and how it will be measured before launching anything; measure it afterwards on the same definition.
+- Draft anything a customer will see (ad copy, creative, email, SMS, landing copy) through `write` in the brand's voice, and get it approved before it is published or sent.
+- Before launching anything, define success and how it will be measured; afterwards, measure it on the same definition.
 
 ## Reply
 
-Lead with the decision or result, the numbers that support it with their source and window, and the next action. Keep drafts and detailed tables in the working space; attach only the approved final through `deliver`.
+Lead with the decision or result, the supporting numbers with their source and window, and the next action. Keep drafts and detailed tables in the working space; attach only the approved final through `deliver`.

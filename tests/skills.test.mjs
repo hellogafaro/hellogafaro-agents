@@ -3,7 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
 
-import { assertInstructions, getConfig, parseFrontmatter } from "../scripts/sync-notion-skills.mjs";
+import { getConfig, parseFrontmatter } from "../scripts/sync-notion-skills.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const skillsDir = path.join(root, "skills");
@@ -26,11 +26,7 @@ test("exported skills have valid metadata", async () => {
   }
 });
 
-test("exported global instructions are complete", async () => {
-  assertInstructions(await readFile(path.join(root, "instructions/AGENTS.md"), "utf8"));
-});
-
-test("agents.json holds the three Notion IDs", async () => {
+test("notion.json holds only the Skills data source", async () => {
   const config = await getConfig(root);
-  assert.deepEqual(Object.keys(config).sort(), ["instructions", "projects", "skills"]);
+  assert.deepEqual(Object.keys(config), ["skills"]);
 });

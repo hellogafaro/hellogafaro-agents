@@ -1,0 +1,15 @@
+# Time and completion
+
+## Time and completion
+
+Record only the actual duration and date in Timesheets. Ask when either is missing and never infer it. Preserve exact minutes in entries and reports; do not round them. Never set a billable flag or record or report a time of day. If an external API requires a start timestamp, use a date-only technical anchor at the start of the stated date and never mention that anchor to users or clients.
+
+A task entry needs the task reference as its name, Owner, Task, Project, Date, and Minutes. A non-task entry such as a meeting omits Task, uses a short description, and uses the Meeting's single verified Project. Never set calculated Hours.
+
+Before marking a task Done, verify the outcome, confirm the required evidence is accessible on the owning task or linked deliverable, and locate existing time entries for this work. Retain any explicitly accepted verification exception; neither worker-local files nor a verbal success claim substitute for required proof. Reuse and verify matching actual entries; create only missing confirmed time, then update Status. A Done task must have a Due date: if it is empty, set it to the actual completion date in the same update. If it is unclear whether a duration is additional or already recorded, ask before writing. Close every task with one completion comment that attaches the final deliverable and its proof: screenshots, recordings, or result files showing the result on the surface people use, within the file limits in [journal-and-artifacts.md](journal-and-artifacts.md). When someone may need to reproduce or continue the result, such as an audit, an analysis or a test run, the attachments must let an agent do it from a fresh clone of the repository without the original machine. Post it, fetch it again, and confirm the attachments persisted before setting Status to Done. If a Done task lacks that proof, add it as a reply in the completion comment's discussion without reopening the task. The comment states what changed and, when useful, what was found, the cause and fix, a decision, limitation, commit, pull request, file, or deliverable. Apply `write`: a bold first line with the result, then a few short paragraphs, with useful links and without lists, template labels, filler, or repetition of the task body. Repair missing time without reopening completed work.
+
+Before setting Status to Done, fetch the task again and check four things. The body holds only the request and its context, with no results or completion state. Assets hold only inputs, with no outputs. The completion comment and its replies carry the deliverable and every result file, and each attachment downloads. No code, script or raw data file is attached outside an evidence archive. If any check fails, fix it first; the task is not Done until all four pass.
+
+For reports, query Timesheets for the requested dates, total Minutes, and group by the requested Project, person, task, day, week, or month.
+
+Finish when the correct Notion records match the request, no duplicate exists, required relations are set, authorized status changes persisted, and time is in Timesheets.

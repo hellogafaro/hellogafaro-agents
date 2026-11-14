@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { assertArchivePaths, assertInstructions, isAutoInvoked, parseFrontmatter } from "../scripts/sync-notion-skills.mjs";
+import { assertArchivePaths, isAutoInvoked, parseFrontmatter } from "../scripts/sync-notion-skills.mjs";
 
 test("parses Notion block-scalar frontmatter", () => {
   const metadata = parseFrontmatter(`---
@@ -28,10 +28,4 @@ test("auto-invoke is on unless the Notion checkbox is unticked", () => {
   assert.equal(isAutoInvoked({ properties: { "Auto-invoke": { checkbox: true } } }), true);
   assert.equal(isAutoInvoked({ properties: {} }), true);
   assert.equal(isAutoInvoked({ properties: { "Auto-invoke": { checkbox: false } } }), false);
-});
-
-test("rejects empty or cut-short global instructions", () => {
-  assert.throws(() => assertInstructions(""), /level-one heading/u);
-  assert.throws(() => assertInstructions("# Title\n\nOne line.\n"), /too short/u);
-  assert.doesNotThrow(() => assertInstructions(`# Title\n\n${"Rule.\n\n".repeat(10)}`));
 });
